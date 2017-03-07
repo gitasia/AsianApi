@@ -1,0 +1,6 @@
+C:\AndreyGrachev\AsianApi\AsianApi\bin\x86\Debug\AsianApi.exe.config
+C:\AndreyGrachev\AsianApi\AsianApi\obj\x86\Debug\AsianApi.csprojResolveAssemblyReference.cache
+C:\AndreyGrachev\AsianApi\AsianApi\obj\x86\Debug\Dashboard.g.cs
+C:\AndreyGrachev\AsianApi\AsianApi\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
+C:\AndreyGrachev\AsianApi\AsianApi\obj\x86\Debug\AsianApi_MarkupCompile.cache
+C:\AndreyGrachev\AsianApi\AsianApi\obj\x86\Debug\AsianApi_MarkupCompile.lref

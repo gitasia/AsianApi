@@ -45,3 +45,4 @@ D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi.Properties.Resources.resources
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi.csproj.GenerateResource.Cache
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\Dashboard.g.cs
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\Dashboard.baml
+D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi.csprojResolveAssemblyReference.cache

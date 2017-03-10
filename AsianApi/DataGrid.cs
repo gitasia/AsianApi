@@ -78,5 +78,11 @@ namespace AsianApi
         public string Bet_FIRST_HALF_OU_1 { get; set; }
         public string Bet_FIRST_HALF_OU_2 { get; set; }
 
+
+        public override string ToString()
+        {
+            return $"{TIME},{EVENT},{FULL_TIME_1X2},{FULL_TIME_HDP_1},{FULL_TIME_HDP_2},{FULL_TIME_OU_1},{FULL_TIME_OU_2},{FIRST_HALF_1X2},{FIRST_HALF_HDP_1},{FIRST_HALF_HDP_2},{FIRST_HALF_OU_1},{FIRST_HALF_OU_2}"; // ,{},{},{},{},{},{},{},{},{},{},{}
+        }
+
     }
 }

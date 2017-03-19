@@ -6,9 +6,11 @@
              xmlns:local="clr-namespace:WpfApplication2"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="750">
-    <DockPanel LastChildFill="True">
+  <DockPanel LastChildFill="True"> 
+    
         <TextBlock DockPanel.Dock="Top" Text="AUSTRALIA HYUNDAI A LEAGUE" Foreground="White" Background="Black" Width="750" HorizontalAlignment="Left"></TextBlock>
-        <DataGrid x:Name="grid" HorizontalAlignment="Left"   VerticalAlignment="Top" Width="750" 
+        <DataGrid x:Name="grid" HorizontalAlignment="Left" DockPanel.Dock="Top"  VerticalAlignment="Top" Width="750" 
                    GridLinesVisibility="Horizontal" HeadersVisibility="None" />
-    </DockPanel>
+  
+        </DockPanel> 
 </UserControl>

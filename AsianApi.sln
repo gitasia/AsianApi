@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsianApi", "AsianApi\AsianApi.csproj", "{DA5AE18B-AC7B-479D-B646-190DE5C35ED9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApplication2", "WpfApplication2\WpfApplication2.csproj", "{8C2CA500-D607-469C-A955-BD1545F2CE18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +24,14 @@ Global
 		{DA5AE18B-AC7B-479D-B646-190DE5C35ED9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA5AE18B-AC7B-479D-B646-190DE5C35ED9}.Release|x86.ActiveCfg = Release|x86
 		{DA5AE18B-AC7B-479D-B646-190DE5C35ED9}.Release|x86.Build.0 = Release|x86
+		{8C2CA500-D607-469C-A955-BD1545F2CE18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C2CA500-D607-469C-A955-BD1545F2CE18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C2CA500-D607-469C-A955-BD1545F2CE18}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8C2CA500-D607-469C-A955-BD1545F2CE18}.Debug|x86.Build.0 = Debug|Any CPU
+		{8C2CA500-D607-469C-A955-BD1545F2CE18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C2CA500-D607-469C-A955-BD1545F2CE18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C2CA500-D607-469C-A955-BD1545F2CE18}.Release|x86.ActiveCfg = Release|Any CPU
+		{8C2CA500-D607-469C-A955-BD1545F2CE18}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

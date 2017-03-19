@@ -10,75 +10,71 @@ using System.Collections.ObjectModel;
 namespace WpfApplication2
 {
     //класс категории (IN Running, ..
-    public class CategoryClass
+
+
+    public class CategoryClass //CategoryClass
     {
-        //id категории
-        private int categoryId;
+            //id категории
+            private int categoryId;
 
-        public int CategoryId
-        {
-            get { return categoryId; }
-            set { categoryId = value; }
-        }
+            public int CategoryId
+            {
+                get { return categoryId; }
+                set { categoryId = value; }
+            }
 
-        //имя категории
-        private string categoryName;
+            //имя категории
+            private string categoryName;
 
-        public string CategoryName
-        {
-            get { return categoryName; }
-            set { categoryName = value; }
-        }
+            public string CategoryName
+            {
+                get { return categoryName; }
+                set { categoryName = value; }
+            }
 
         //список входящих в категорию лиг
-        private ObservableCollection<ProductClass> productsList;
+           private ObservableCollection<ProductClass> productsList;
+           public ObservableCollection<ProductClass> ProductsList
+           {
+                get { return productsList; }
+                set { productsList = value; }
+           }
 
-        public ObservableCollection<ProductClass> ProductsList
+            //класс лиги
+           public CategoryClass(int _categoryId, string _categoryName) //CategoryClass
+           {
+                CategoryId = _categoryId;
+                CategoryName = _categoryName;
+                ProductsList = new ObservableCollection<ProductClass>();
+           }
+        }
+        public class ProductClass
         {
-            get { return productsList; }
-            set { productsList = value; }
+            //id лиги
+            private int productId;
+
+            public int ProductId
+            {
+                get { return productId; }
+                set { productId = value; }
+            }
+
+            //имя лиги
+            private string productName;
+
+            public string ProductName
+            {
+                get { return productName; }
+                set { productName = value; }
+            }
+
+            public ProductClass(int _productId, string _productName)
+            {
+                ProductId = _productId;
+                ProductName = _productName;
+            }
         }
 
-        //класс лиги
-
-
-        public CategoryClass(int _categoryId, string _categoryName)
-        {
-            CategoryId = _categoryId;
-            CategoryName = _categoryName;
-
-            ProductsList = new ObservableCollection<ProductClass>();
-
-           
-        }
-    }
-    public class ProductClass
-    {
-        //id лиги
-        private int productId;
-
-        public int ProductId
-        {
-            get { return productId; }
-            set { productId = value; }
-        }
-
-        //имя лиги
-        private string productName;
-
-        public string ProductName
-        {
-            get { return productName; }
-            set { productName = value; }
-        }
-
-        public ProductClass(int _productId, string _productName)
-        {
-            ProductId = _productId;
-            ProductName = _productName;
-        }
-    }
-
-   
+     
 }
 

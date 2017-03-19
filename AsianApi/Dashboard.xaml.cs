@@ -57,6 +57,7 @@ namespace AsianApi
         public string game_minuts;
         //static datagrid FootBall_Ligas; 
         private Task<ObservableCollection<MyStr>> task;
+        private string path = @"Test.txt";
 
         public delegate void EventHandler(object sender, object e); //tick timer
 
@@ -75,23 +76,30 @@ namespace AsianApi
             Ligass = new ObservableCollection<MyStr>();
             Select_Ligs = new List<string>(); //КЛИКНУТЫЕ ЛИГИ
             Ligs = new List<string>();// work list, to do sort ...
+            while (true)
+            {
+                if (!File.Exists(path)) // если файл есть , то не нужно скачивать с азии 
+                {
+                    Get_Ligas(); Get_Matches();
+                }
+            }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
               
-            grid.ItemsSource = Itog_result; // обновление таблицЫ
+    //        grid.ItemsSource = Itog_result; // обновление таблицЫ
             
-            Football_Ligas.ItemsSource = Ligas; // обновление списка лиг 
+   //         Football_Ligas.ItemsSource = Ligas; // обновление списка лиг 
             // получить текущие лиги
-            Get_Ligas();
+  //          Get_Ligas();
             // получить текущие матчи, распределить их по лигам
-            Get_Matches();
+  //          Get_Matches();
             // on timer 3 sec
             timer = new System.Windows.Threading.DispatcherTimer();
             timer.Tick += new System.EventHandler(timer_Tick);
-            timer.Interval = new TimeSpan(0, 0, 5);
-            timer.Start();
+            timer.Interval = new TimeSpan(0, 0, 1);
+    //        timer.Start();
     //        while (true)
    //         {
     //            task = new Task<ObservableCollection<MyStr>>(() => Get_Ligas());
@@ -106,29 +114,16 @@ namespace AsianApi
  
         private void timer_Tick(object sender, object e)
         {
-            timer.Stop();// work
-      //      task = new Task<ObservableCollection<MyStr>>(() => Get_Ligas());
-     //       Ligass = new ObservableCollection<MyStr>();
-     //       task.Start();
-            //    Ligas.Clear();
-    //        Ligas = task.Result;
-    //        task.Dispose();
-      //      Ligas.Clear();
-      //      Ligas = Ligass;
-            //      Ligass.Clear();
-                   Get_Ligas();
-                    Get_Matches();
-        //    Football_Ligas.ItemsSource = Ligas;
+            timer.Stop();
+            Get_Ligas(); Get_Matches();
             timer.Start();
         }
 
-        //    private 
-       private void Get_Ligas()
+        private void Get_Ligas()
         {
             // получить текущие лиги
             JToken leaguesJson = api.GetLeagues();
             List<JToken> leagues = ApiModel.Parse(leaguesJson, "Sports League");
-     //       Ligass = new ObservableCollection<MyStr>();
             // записать их в свойство объекта LeaguesList
             foreach (JToken league in leagues)
             {
@@ -213,12 +208,13 @@ namespace AsianApi
                 events.GameId = (long)game.SelectToken("GameId");
                 ApiModel.setEventModel(events, game);
                 gameLine.EventsList.Add(events);
+                if (league != null)
                 league.ListGames.Add(gameLine);
             }
             Home_Team = "";
             for (int i = 0; i < leaguesList.Count; i++)
             {
-                result.Add(new MyTable("", leaguesList[i].LeagueName, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                result.Add(new MyTable("", leaguesList[i].LeagueName, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", leaguesList[i].LeagueId.ToString(), "", ""));
                 int j = 0;
                 int k = 0;
                 leaguesList[i].ListGames.Sort((a, b) => a.HomeTeam.Name.CompareTo(b.HomeTeam.Name));
@@ -236,16 +232,16 @@ namespace AsianApi
                     {
                         //       if (k == 0)
                         k = 0;
-                        result.Add(new MyTable(leaguesList[i].ListGames[j].HomeTeam.Score.ToString() + ":" + leaguesList[i].ListGames[j].AwayTeam.Score.ToString(), leaguesList[i].ListGames[j].HomeTeam.Name, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.BookieOdds, 1, 0), Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.BookieOdds, 1, 0), "", "", "", "", "", "", "", "", "", "")); //первая строка
-                        result.Add(new MyTable(game_minuts, leaguesList[i].ListGames[j].AwayTeam.Name, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.BookieOdds, 2, 0), Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.BookieOdds, 2, 0), "", "", "", "", "", "", "", "", "", ""));
-                        result.Add(new MyTable("*", "Draw", WinX(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds), "", "", "", "", WinX(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds), "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                        result.Add(new MyTable(leaguesList[i].ListGames[j].HomeTeam.Score.ToString() + ":" + leaguesList[i].ListGames[j].AwayTeam.Score.ToString(), leaguesList[i].ListGames[j].HomeTeam.Name, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.BookieOdds, 1, 0), Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.BookieOdds, 1, 0), "", "", "", "", "", "", "", "", "", "", leaguesList[i].LeagueId.ToString(), leaguesList[i].ListGames[j].MatchId.ToString(), leaguesList[i].ListGames[j].EventsList[k].GameId.ToString())); //первая строка
+                        result.Add(new MyTable(game_minuts, leaguesList[i].ListGames[j].AwayTeam.Name, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.BookieOdds, 2, 0), Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.BookieOdds, 2, 0), "", "", "", "", "", "", "", "", "", "", leaguesList[i].LeagueId.ToString(), leaguesList[i].ListGames[j].MatchId.ToString(), leaguesList[i].ListGames[j].EventsList[k].GameId.ToString()));
+                        result.Add(new MyTable("*", "Draw", WinX(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds), "", "", "", "", WinX(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds), "", "", "", "", "", "", "", "", "", "", "", "", "", "", leaguesList[i].LeagueId.ToString(), leaguesList[i].ListGames[j].MatchId.ToString(), leaguesList[i].ListGames[j].EventsList[k].GameId.ToString()));
                     }
 
                     else
                     {
-                        result.Add(new MyTable(" ", " ", Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.BookieOdds, 1, 0), Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.BookieOdds, 1, 0), "", "", "", "", "", "", "", "", "", "")); //первая строка
-                        result.Add(new MyTable(" ", " ", Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.BookieOdds, 2, 0), Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.BookieOdds, 2, 0), "", "", "", "", "", "", "", "", "", ""));
-                        result.Add(new MyTable(" ", " ", WinX(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds), "", "", "", "", WinX(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds), "", "", "", "", "", "", "", "", "", "", "", "", "", ""));
+                        result.Add(new MyTable(" ", " ", Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.BookieOdds, 1, 0), Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.BookieOdds, 1, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.BookieOdds, 1, 0), "", "", "", "", "", "", "", "", "", "", leaguesList[i].LeagueId.ToString(), leaguesList[i].ListGames[j].MatchId.ToString(), leaguesList[i].ListGames[j].EventsList[k].GameId.ToString())); //первая строка
+                        result.Add(new MyTable(" ", " ", Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeHdp.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].FullTimeOu.BookieOdds, 2, 0), Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.Handicap, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeHdp.BookieOdds, 2, 0), leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.Goal, Win(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOu.BookieOdds, 2, 0), "", "", "", "", "", "", "", "", "", "", leaguesList[i].LeagueId.ToString(), leaguesList[i].ListGames[j].MatchId.ToString(), leaguesList[i].ListGames[j].EventsList[k].GameId.ToString()));
+                        result.Add(new MyTable(" ", " ", WinX(leaguesList[i].ListGames[j].EventsList[k].FullTimeOneXTwo.BookieOdds), "", "", "", "", WinX(leaguesList[i].ListGames[j].EventsList[k].HalfTimeOneXTwo.BookieOdds), "", "", "", "", "", "", "", "", "", "", "", "", "", "", leaguesList[i].LeagueId.ToString(), leaguesList[i].ListGames[j].MatchId.ToString(), leaguesList[i].ListGames[j].EventsList[k].GameId.ToString()));
                     }
                     //j++;
                     k++;
@@ -253,10 +249,22 @@ namespace AsianApi
                     j++;
                 }
             }
-            result.Add(new MyTable("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")); // пустая строка - как конец 
+            result.Add(new MyTable("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "")); // пустая строка - как конец 
             leaguesList.Clear();
-           
-            set1();
+
+                    string data = "";
+          //          if (!File.Exists(path))   это проверяется ранее..но нужно для отладки
+                    {
+                        using (StreamWriter sw = File.CreateText(path))
+                        {
+                            for (int fi = 0; fi < result.Count; fi++)
+                            {
+                                data = string.Join(",", result[fi]);
+                                sw.WriteLine(data);
+                            }
+                        }
+                    }
+            //set1();   // нужен для отладки в монопольном режиме
         }
              
 
@@ -311,7 +319,7 @@ namespace AsianApi
             {
                 Itog_result.RemoveAt(ii); // лишние для отображения
             }
-        //    Ligs.Clear();
+            Ligs.Clear();
         }
 
         // разбор BookieOdds       
@@ -352,7 +360,7 @@ namespace AsianApi
             Ligas.RemoveAt(0);
             Ligas.Insert(0, path);
             }
-            set1();
+        //    set1();
         }
 
         public void Football_Ligas_MouseUp(object sender, MouseButtonEventArgs e) //Получаем данные из таблицы по клику на строке

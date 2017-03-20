@@ -26,7 +26,6 @@ namespace AsianApi
                                                   string Bet_FULL_TIME_1X2, string Bet_FULL_TIME_HDP_1, string Bet_FULL_TIME_HDP_2, string Bet_FULL_TIME_OU_1, string Bet_FULL_TIME_OU_2, string Bet_FIRST_HALF_1X2, string Bet_FIRST_HALF_HDP_1, string Bet_FIRST_HALF_HDP_2, string Bet_FIRST_HALF_OU_1, string Bet_FIRST_HALF_OU_2, string LeagueId, string MathcId, string GameId)
         {
 
-            
             this.TIME = TIME;
             this.EVENT = EVENT;
             this.FULL_TIME_1X2 = FULL_TIME_1X2;

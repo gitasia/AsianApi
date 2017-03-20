@@ -4,12 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:WpfApplication2"
         Title="NODDS_Live" Height="768" Width="1760" MinHeight="768" MinWidth="1760" Background="Black" Loaded="Window_Loaded"
-       
+      
         Closing="MainWindow_Closing"> 
     <Window.Resources>
         <local:MultiBindingConverter_myConv x:Key="MultiBindingConverter_myConv" />
         <local:MultiBindingConverter_ x:Key="MultiBindingConverter_" />
-        <local:MultiBindingConverter_ x:Key="CellConverter_" />
+        
     </Window.Resources>
     
     <Grid>
@@ -30,10 +30,11 @@
                    BorderThickness="0"
                    Margin="25,0,20,0" 
                    AutoGenerateColumns="False"
-                   Grid.Column="0" Grid.Row="1" >
+                   
+                   Grid.Column="0" Grid.Row="1">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="LigaName" Binding="{Binding LigaName}" />
+                <DataGridTextColumn Header="LigaName" Binding="{Binding LigaName}" Foreground="LightGray" />
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
@@ -80,7 +81,7 @@
                 <DataGridTextColumn Header="FULL_TIME_OU_2"   Binding="{Binding FULL_TIME_OU_2}"   IsReadOnly="True" Width="53"/>
                 <DataGridTextColumn Header="FIRST_HALF_1X2"   Binding="{Binding FIRST_HALF_1X2}"   IsReadOnly="True" Width="48" Foreground="Red" FontWeight="Bold"/>
                 <DataGridTextColumn Header="FIRST_HALF_HDP_1" Binding="{Binding FIRST_HALF_HDP_1}" IsReadOnly="True" Width="47"/>
-                <DataGridTextColumn Header="FIRST_HALF_2"     Binding="{Binding FIRST_HALF_HDP_2}" IsReadOnly="True" Width="47"/>
+                <DataGridTextColumn Header="FIRST_HALF_HDP_2" Binding="{Binding FIRST_HALF_HDP_2}" IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="FIRST_HALF_OU_1"  Binding="{Binding FIRST_HALF_OU_1}"  IsReadOnly="True" Width="53"/>
                 <DataGridTextColumn Header="FIRST_HALF_OU_2"  Binding="{Binding FIRST_HALF_OU_2}"  IsReadOnly="True" Width="53"/>
 
@@ -89,9 +90,9 @@
                 <DataGridTextColumn Header="Bet_FULL_TIME_HDP_2"  Binding="{Binding Bet_FULL_TIME_HDP_2}"  IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="Bet_FULL_TIME_OU_1"   Binding="{Binding Bet_FULL_TIME_OU_1}"   IsReadOnly="True" Width="53"/>
                 <DataGridTextColumn Header="Bet_FULL_TIME_OU_2"   Binding="{Binding Bet_FULL_TIME_OU_2}"   IsReadOnly="True" Width="53"/>
-                <DataGridTextColumn Header="Bet_FIRST_HALF_1X2"   Binding="{Binding Bet_FIRST_HALF_1X2}"   IsReadOnly="True" Width="48" Foreground="Red" FontWeight="Bold"/>
+                <DataGridTextColumn Header="Bet_FIRST_HALF_1X2"   Binding="{Binding Bet_FIRST_HALF_1X2}"                    Width="48" Foreground="Red" FontWeight="Bold"/>
                 <DataGridTextColumn Header="Bet_FIRST_HALF_HDP_1" Binding="{Binding Bet_FIRST_HALF_HDP_1}" IsReadOnly="True" Width="47"/>
-                <DataGridTextColumn Header="Bet_FIRST_HALF_2"     Binding="{Binding Bet_FIRST_HALF_HDP_2}" IsReadOnly="True" Width="47"/>
+                <DataGridTextColumn Header="Bet_FIRST_HALF_HDP_2" Binding="{Binding Bet_FIRST_HALF_HDP_2}" IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="Bet_FIRST_HALF_OU_1"  Binding="{Binding Bet_FIRST_HALF_OU_1}"  IsReadOnly="True" Width="53"/>
                 <DataGridTextColumn Header="Bet_FIRST_HALF_OU_2"  Binding="{Binding Bet_FIRST_HALF_OU_2}"  IsReadOnly="True" Width="53"/>
 
@@ -112,6 +113,9 @@
                                 <Binding Path="LeagueId"/>
                                 <Binding Path="MathcId"/>
                                 <Binding Path="GameId"/>
+                                <Binding Path="FIRST_HALF_1X2"/>
+                                <Binding Path="Bet_FIRST_HALF_1X2"/>
+                                
                             </MultiBinding>
                         </Setter.Value>
                     </Setter>
@@ -149,4 +153,6 @@
      <Binding Path="FULL_TIME_1X2"/>
                                 <Binding Path="FIRST_HALF_1X2"/>
                                 <Binding Path="Bet_FULL_TIME_1X2"/>
-                                <Binding Path="Bet_FIRST_HALF_1X2"/>-->
+                                <Binding Path="Bet_FIRST_HALF_1X2"/>
+    <local:MultiBindingConverter_ x:Key="CellConverter_" />
+    Foreground="Black"-->

@@ -13,77 +13,48 @@ using System.Diagnostics;
 using System.Windows.Controls;
 using System.Data;
 
-
-//using System.Windows.Forms;
-
 namespace WpfApplication2
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic 
     /// </summary>
-
-    public static class Extensions1
-    {
-        public static string IsNameHeader(this object val)
-        {
-        //    double test;
-            return val.ToString();
-        }
-
-        public static double ToDouble(this object val)
-        {
-            return Convert.ToDouble(val);
-        }
-    }
 
     public partial class MainWindow : Window
     {
 
         private List<string> Ligs; // pool ligs
-        public static ObservableCollection<MyStr> Ligas;
+        public static ObservableCollection<MyStr> Ligas; // view table
         public static List<string> Select_Ligs; //кликнутые
-        private List<string> Ligass;
+        private List<string> Ligass; // for view ligs
 
         private List<MyTable> result; //pool kef
-        private List<SavTable> limit; // limit kef
-        public static List<limit> limit2;
-        private ObservableCollection<MyTable> Itog_result; // view
+        public static List<limit> limit2; // edit limit kef
+        private ObservableCollection<MyTable> Itog_result; // view table
 
         private string path = @"Test.txt";
-        private string data,lkef; // read file
-        private string id;
-
+     
         private DispatcherTimer timer;
         public delegate void EventHandler(object sender, object e); //tick timer
 
         private MyTable path_cell;
-        private DataRowView rowView;
-        private int lim;
-       
-
-
-
+        private string data; // readln file
+     
         public MainWindow()
         {
             InitializeComponent();
             result = new List<MyTable>(); // приемник данных
-            limit = new List<SavTable>();
             limit2 = new List<limit>();
             Itog_result = new ObservableCollection<MyTable>(); // сгруппированная таблица для отображения
             Ligas = new ObservableCollection<MyStr>();
             Select_Ligs = new List<string>(); //КЛИКНУТЫЕ ЛИГИ
             Ligs = new List<string>();// work list, to do sort ...
             Ligass = new List<string>();
-
-        }
+       }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(path))
-            {
-                File.Delete(path); //старый
-            }
-            //binding view data cllection
+            if (File.Exists(path)) File.Delete(path); //старый, если есть
+            //binding view data collection
             Football_Ligas.ItemsSource = Ligas;
             grid.ItemsSource = Itog_result;
 
@@ -129,60 +100,88 @@ namespace WpfApplication2
 
         private void Edit_begin(object sender, DataGridBeginningEditEventArgs e) //Начали ввод границы коэффициента
         {
-
-         //   rowView = (DataRowView)grid.SelectedItem;
             timer.Stop();
-        }
+            path_cell = grid.SelectedItem as MyTable;
+            string bet_column = e.Column.SortMemberPath.ToString();
+            if (path_cell.EVENT == " ")
+            {
+                e.Cancel = true;
+                timer.Start();
+                return;
+            }
+            switch (bet_column)
+            {
+                case "Bet_FULL_TIME_1X2":
+                   if(path_cell.Bet_FIRST_HALF_1X2 != "")
+                    {
+                        e.Cancel = true;
+                        timer.Start();
+                        return;
+                    }
+                   break;
+                case "Bet_FIRST_HALF_1X2":
+                    if (path_cell.Bet_FULL_TIME_1X2 != "")
+                    {
+                        e.Cancel = true;
+                        timer.Start();
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
 
-        
+        }
 
         private void Edit_cell(object sender, DataGridCellEditEndingEventArgs e) //Закончили ввод коэффициента
         {
             var editedTextbox = e.EditingElement as TextBox;
-            var ec = e.Column.DisplayIndex; //SortMemberPath;
+            string edit_cell = editedTextbox.Text.ToString();
+            string bet_column = e.Column.SortMemberPath.ToString(); //SortMemberPath;DisplayIndex
             path_cell = grid.SelectedItem as MyTable;
-            path_cell.Bet_FULL_TIME_1X2 = editedTextbox.Text.ToString();
-            double t;
-            double bet;
-            bool tt= double.TryParse(path_cell.FULL_TIME_1X2.Replace(".",","),out t);
-            bool bett = double.TryParse(path_cell.Bet_FULL_TIME_1X2.Replace(".",","), out bet);
-          //  bool tt = double.TryParse("2,8", out t);
-          //  bool bett = double.TryParse("5", out bet);
-
-            string diff = "under";
-            if (t < bet)
-                diff = "above";
-        //    limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, path_cell.Bet_FULL_TIME_1X2));
-            int z = 0;
-            if (limit2.Count == 0)
-            {
-                limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, path_cell.Bet_FULL_TIME_1X2, diff));
-       //         lim++;
-            }
-            else
-            {
-                for (int ll = 0; ll <= limit2.Count - 1; ll++)
+                double bet;
+                bool bett = double.TryParse(edit_cell.Replace(".", ","), out bet);
+                double t = 0;
+                bool tt;
+                switch (bet_column)
                 {
-                    if (limit2[ll].Id == path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId)
+                    case "Bet_FULL_TIME_1X2":
+                        tt = double.TryParse(path_cell.FULL_TIME_1X2.Replace(".", ","), out t);
+                        path_cell.Bet_FULL_TIME_1X2 = edit_cell;
+
+                        break;
+                    case "Bet_FIRST_HALF_1X2":
+                        tt = double.TryParse(path_cell.FIRST_HALF_1X2.Replace(".", ","), out t);
+                        path_cell.Bet_FIRST_HALF_1X2 = edit_cell;
+
+                        break;
+                    default:
+                        break;
+                }
+                string diff = "under";
+                if (t < bet) diff = "above";
+                int z = 0;
+                if (limit2.Count == 0) limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, edit_cell, bet_column, diff, false));
+                else
+                {
+                    for (int ll = 0; ll <= limit2.Count - 1; ll++)
                     {
-                        if (editedTextbox.Text.ToString() != "")
-                            limit2[ll].v = editedTextbox.Text.ToString();
-                        else
-                            limit2.RemoveAt(ll);
-                        z = 1; break;
+                        if (limit2[ll].Id == path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId)
+                        {
+                            if (edit_cell != "")
+                            {
+                                limit2[ll].v = edit_cell;
+                                limit2[ll].bet_column = bet_column;
+                                limit2[ll].diff = diff;
+                                limit2[ll].betted = false;
+                            }
+                            else limit2.RemoveAt(ll);
+                            z = 1; break;
+                        }
                     }
+                    if (z == 0) limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, edit_cell, bet_column, diff, false));
                 }
-                if (z == 0)
-                {
-                    limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, path_cell.Bet_FULL_TIME_1X2,diff));
-         //           lim++;
-
-                }
-        //        z = 0;
-            }
-
-
-            timer.Start();
+           timer.Start();
         }
 
         private void table()
@@ -218,10 +217,21 @@ namespace WpfApplication2
                                     if (z == -1)
                                     {
                                         result[i].Bet_FULL_TIME_1X2 = "";
+                                        result[i].Bet_FIRST_HALF_1X2 = "";
                                     }
                                     else
                                     {
-                                        result[i].Bet_FULL_TIME_1X2 = limit2[z].v;
+                                        switch (limit2[z].bet_column)
+                                        {
+                                            case "Bet_FULL_TIME_1X2":
+                                                result[i].Bet_FULL_TIME_1X2 = limit2[z].v;
+                                                break;
+                                            case "Bet_FIRST_HALF_1X2":
+                                                result[i].Bet_FIRST_HALF_1X2 = limit2[z].v;
+                                                break;
+                                            default:
+                                                break;
+                                        }
                                     }
                                 }
                                 result[i] = new MyTable(data.Split(',')[0], data.Split(',')[1], data.Split(',')[2], data.Split(',')[3], data.Split(',')[4], data.Split(',')[5], data.Split(',')[6], data.Split(',')[7], data.Split(',')[8], data.Split(',')[9], data.Split(',')[10], data.Split(',')[11], result[i].Bet_FULL_TIME_1X2, "", result[i].Bet_FULL_TIME_HDP_2, "", result[i].Bet_FULL_TIME_OU_2, result[i].Bet_FIRST_HALF_1X2, "", result[i].Bet_FIRST_HALF_HDP_2, "", result[i].Bet_FIRST_HALF_OU_2, data.Split(',')[12], data.Split(',')[13], data.Split(',')[14]);
@@ -231,7 +241,7 @@ namespace WpfApplication2
                     }
                     File.Delete(path);
                     for (int ii = Ligs.Count-1; ii >= j-1; ii--) Ligs.RemoveAt(ii);
-                    Lab.Content = "In Running" + " (" + Ligs.Count.ToString() + ")";//Ligs.Count.ToString() + ")";
+                    Lab.Content = "In Running" + " (" + Ligs.Count.ToString() + ")";
                     for (int ii = result.Count - 1; ii >= i; ii--) result.RemoveAt(ii); // лишние для отображения
                     set1();
                 }
@@ -264,16 +274,14 @@ namespace WpfApplication2
                 Ligass.Clear(); Select_Ligs.Sort(); for (int g = 0; g <= Select_Ligs.Count - 1; g++) Ligass.Add(Select_Ligs[g]);
             }
 
-            int i = 0; int j = 0; int k = 0; int lg = 0;
+            int i = 0; int j = 0; int k = 0; 
             for (int lg = 0; lg <= Ligass.Count-1; lg++)
             {
                 i = 0;
-               // while (result[i].TIME =="" && i < result.Count - 1)
                 while (i < result.Count - 1)
                 {
                     if (result[i].EVENT == Ligass[lg])
                     {
-                        lg++;
                         if (Itog_result.Count <= j) {Itog_result.Add(result[i]); j++;}
                         else { Itog_result[j] = result[i]; j++;}
                         i++;
@@ -287,7 +295,7 @@ namespace WpfApplication2
                             }
                             i = i + 3;
                         }
-                      //  i--;
+                        i--;
                     }
                     i++;
                 }
@@ -302,7 +310,7 @@ namespace WpfApplication2
             {
                 MyStr path = Ligas[0]; Ligas.RemoveAt(0); Ligas.Insert(0, path);
             }
-                set1();
+            set1();
         }
 
         public void Football_Ligas_MouseUp(object sender, MouseButtonEventArgs e) //Получаем данные из таблицы по клику на строке
@@ -327,7 +335,8 @@ namespace WpfApplication2
             SolidColorBrush r_brush = Brushes.White;
             object obj = values[0];  // тут получили значение поля TIME
             object obj1 = values[1]; // тут получили значение поля EVENT
-            if (obj.ToString() == "")
+            object match = values[5];
+            if (obj.ToString() == "" && match.ToString() == "")
             {
                 if (obj1.ToString() != "")
                 {
@@ -335,7 +344,7 @@ namespace WpfApplication2
                     {
                         if ((obj1.ToString()) == ((MyStr)Lig).LigaName)
                         {
-                            r_brush = Brushes.LightGray; //строка серым
+                            r_brush = Brushes.LightGray; //строка color
                             return r_brush;
                         }
                     }
@@ -343,13 +352,14 @@ namespace WpfApplication2
             }
             else
             {
-                object Bet = values[3];
                 object F1x2 = values[2];
-                if (Bet.ToString() !="" && F1x2.ToString() != "")
+                object Bet = values[3];
+                object H1x2 = values[7];
+                object Bet_H1x2 = values[8];
+                if ((Bet.ToString() !="" && F1x2.ToString() != "") || (Bet_H1x2.ToString() != "" && H1x2.ToString() != "")) // имеются границы и кэфы не пустые
                 {
-                
                     object liga = values[4];
-                    object match = values[5];
+                    
                     object game = values[6];
                     int z = -1;
                     for (int ll = 0; ll <= MainWindow.limit2.Count - 1; ll++)
@@ -361,23 +371,48 @@ namespace WpfApplication2
                     }
                     if (z != -1)
                     {
+                        if ((Bet.ToString() != "" && F1x2.ToString() != ""))
+                        {
                         double tconv;
                         double betconv;
-                        bool ttconv = double.TryParse(F1x2.ToString().Replace(".",","), out tconv);
+                        bool ttconv = double.TryParse(F1x2.ToString().Replace(".", ","), out tconv);
                         bool bettconv = double.TryParse(Bet.ToString().Replace(".", ","), out betconv);
 
-                        if (MainWindow.limit2[z].diff=="under")
+                        if (MainWindow.limit2[z].diff == "under")
                         {
                             if (betconv >= tconv)
                             {
-                                r_brush = Brushes.Red; return r_brush;
+                                r_brush = Brushes.LightBlue; return r_brush;
                             }
-                         }
+                        }
                         else
                         {
                             if (betconv <= tconv)
                             {
-                                r_brush = Brushes.Red; return r_brush;
+                                r_brush = Brushes.LightCoral; return r_brush;
+                            }
+                        }
+                      }
+                        if ((Bet_H1x2.ToString() != "" && H1x2.ToString() != ""))
+                        {
+                            double tconv;
+                            double betconv;
+                            bool ttconv = double.TryParse(H1x2.ToString().Replace(".", ","), out tconv);
+                            bool bettconv = double.TryParse(Bet_H1x2.ToString().Replace(".", ","), out betconv);
+
+                            if (MainWindow.limit2[z].diff == "under")
+                            {
+                                if (betconv >= tconv)
+                                {
+                                    r_brush = Brushes.LightSalmon; return r_brush;
+                                }
+                            }
+                            else
+                            {
+                                if (betconv <= tconv)
+                                {
+                                    r_brush = Brushes.LightPink; return r_brush;
+                                }
                             }
                         }
                     }
@@ -398,14 +433,14 @@ namespace WpfApplication2
             public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
             {
                 object obj = values[0];  // тут получили значение поля LigaName в таблице с лигами
-                SolidColorBrush r_brush = Brushes.White;
+                SolidColorBrush r_brush = Brushes.Black;
                 if (MainWindow.Select_Ligs.Count() != 0)
                 {
                     foreach (string Lig in MainWindow.Select_Ligs) // по всем лигам заполняем таблицу
                     {
                         if ((obj.ToString()) == Lig)
                         {
-                            r_brush = Brushes.LightGray;
+                            r_brush = Brushes.DarkGreen;
                             return r_brush;
                         }
                     }
@@ -419,52 +454,7 @@ namespace WpfApplication2
                 throw new NotImplementedException();
             }
     }
-
-    public static class Extensions
-    {
-        public static bool IsNumeric(this object val)
-        {
-            double test;
-            return double.TryParse(val.ToString(), out test);
-        }
-
-        public static double ToDouble(this object val)
-        {
-            return Convert.ToDouble(val);
-        }
-    }
-    class CellConverter_ : IMultiValueConverter
-    {
-
-        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-      //      if (values[1] is DataRow)
-            {
-                //Change the background of any cell with 1.0 to light red.
-                var cell = (DataGridCell)values[0];
-                var row = (DataRow)values[1];
-                var columnName = cell.Column.SortMemberPath;
-                if (columnName== "Bet_FULL_TIME_1X2")
-                {
-                    if (row[columnName].ToString() != "")
-                    {
-                        return new SolidColorBrush(Colors.LightSalmon);
-                    }
-                }
-         //       if (row[columnName].IsNumeric())
-                //                   if (row[columnName].IsNumeric() && row[columnName].ToDouble() == 1.0)
-      //          return new SolidColorBrush(Colors.LightSalmon);
-
-            }
-            return SystemColors.AppWorkspaceColor;
-        }
-
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
+     
 }
 //   private void Datagrid_ItemCreated(object sender, System.Web.UI.WebControls.DataGridItemEventArgs e)
 //   {

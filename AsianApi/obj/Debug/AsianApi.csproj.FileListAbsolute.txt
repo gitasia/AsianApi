@@ -26,7 +26,6 @@ D:\E\nodds\AsianApi\AsianApi\bin\Debug\AsianApi.exe.config
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi.exe
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi.pdb
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\Table_League.g.cs
-D:\E\nodds\AsianApi\AsianApi\obj\Debug\GeneratedInternalTypeHelper.g.cs
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi_MarkupCompile.cache
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi_MarkupCompile.lref
 D:\E\nodds\AsianApi\AsianApi\bin\Debug\AsianApi.exe
@@ -45,4 +44,3 @@ D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi.Properties.Resources.resources
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi.csproj.GenerateResource.Cache
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\Dashboard.g.cs
 D:\E\nodds\AsianApi\AsianApi\obj\Debug\Dashboard.baml
-D:\E\nodds\AsianApi\AsianApi\obj\Debug\AsianApi.csprojResolveAssemblyReference.cache

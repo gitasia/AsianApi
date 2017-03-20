@@ -87,68 +87,22 @@ namespace WpfApplication2
         public string GameId { get; set; }
 
     }
-    public class SavTable
-    {
-        public SavTable(string TIME, string EVENT, string Bet_FULL_TIME_1X2, string Bet_FIRST_HALF_1X2, string LeagueId, string MathcId, string GameId)
-        {
-
-            this.TIME = TIME;
-            this.EVENT = EVENT;
-
-            this.Bet_FULL_TIME_1X2 = Bet_FULL_TIME_1X2;
-            this.Bet_FIRST_HALF_1X2 = Bet_FIRST_HALF_1X2;
-            
-            this.LeagueId = LeagueId;
-            this.MathcId = MathcId;
-            this.GameId = GameId;
-
-        }
-
-
-        public string TIME { get; set; }
-        public string EVENT { get; set; }
-        
-        public string Bet_FULL_TIME_1X2 { get; set; }
-        public string Bet_FIRST_HALF_1X2 { get; set; }
-        
-        public string LeagueId { get; set; }
-        public string MathcId { get; set; }
-        public string GameId { get; set; }
-
-    }
 
     public class limit
     {
-       
-
-        public limit(string Id, string v, string diff)
+        public limit(string Id, string v, string bet_column, string diff, bool betted)
         {
             this.Id = Id;
             this.v = v;
+            this.bet_column = bet_column;
             this.diff = diff;
+            this.betted = betted;
        }
         public string Id { get; set; }
         public string v { get; set; }
+        public string bet_column { get; set; }
         public string diff { get; set; }
+        public bool betted { get; set; }
     }
-
-
-
-    public class League
-    {
-        public Match MatchId { get; set; }
-    }
-    public class Match
-    {
-        public Games GameId { get; set; }
-    }
-    public class Games
-    {
-        public Command Command_str { get; set; }
-    }
-    public class Command
-    {
-        public string F_1x2 { get; set; }
-        public string H_1x2 { get; set; }
-    }
+    
 }

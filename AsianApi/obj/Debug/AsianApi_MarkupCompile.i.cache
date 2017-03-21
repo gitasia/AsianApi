@@ -4,7 +4,7 @@
 winexe
 C#
 .cs
-d:\E\nodds\AsianApi\AsianApi\obj\Debug\
+C:\Nodds\AsianApi\AsianApi\obj\Debug\
 AsianApi
 none
 false
@@ -12,8 +12,8 @@ DEBUG;TRACE
 
 21190657874
 
-29111895472
-231894091255
+291749266291
+23-1575631829
 Dashboard.xaml;Table_League.xaml;
 
 True

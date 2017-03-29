@@ -58,22 +58,31 @@ namespace AsianApi.Model.Worker
 
         private void Get_Ligas()
         {
-            // получить текущие лиги
-            JToken leaguesJson = api.GetLeagues();
-            List<JToken> leagues = ApiModel.Parse(leaguesJson, "Sports League");
-            // записать их в свойство объекта LeaguesList
-            foreach (JToken league in leagues)
+            try
             {
-                LeagueModel leagueModel = new LeagueModel();
-                leagueModel.LeagueId = (long)league.SelectToken("LeagueId");
-                leagueModel.LeagueName = (string)league.SelectToken("LeagueName");
-                leagueModel.MarketTypeId = (int)league.SelectToken("MarketTypeId");
-                leagueModel.Since = (ulong)league.SelectToken("Since");
-                leagueModel.ListGames = new List<Game>();
+                // получить текущие лиги
+                JToken leaguesJson = api.GetLeagues();
+                List<JToken> leagues = ApiModel.Parse(leaguesJson, "Sports League");
+                // записать их в свойство объекта LeaguesList
+                foreach (JToken league in leagues)
+                {
+                    LeagueModel leagueModel = new LeagueModel();
+                    leagueModel.LeagueId = (long)league.SelectToken("LeagueId");
+                    leagueModel.LeagueName = (string)league.SelectToken("LeagueName");
+                    leagueModel.MarketTypeId = (int)league.SelectToken("MarketTypeId");
+                    leagueModel.Since = (ulong)league.SelectToken("Since");
+                    leagueModel.ListGames = new List<Game>();
 
-                leaguesList.Add(leagueModel);
+                    leaguesList.Add(leagueModel);
+                }
+                leaguesList.Sort((a, b) => a.LeagueName.CompareTo(b.LeagueName)); // сортировка
             }
-            leaguesList.Sort((a, b) => a.LeagueName.CompareTo(b.LeagueName)); // сортировка
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                Environment.Exit(0);
+                return;
+            }
         }
 
         public void Get_Matches()

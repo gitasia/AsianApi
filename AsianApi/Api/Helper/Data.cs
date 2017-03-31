@@ -10,7 +10,7 @@ namespace AsianApi.Api.Helper
 {
     class Data
     {
-         // protected string siteUrl = "http://hospital.local/app_dev.php/api/";
+        //  protected string siteUrl = "http://hospital.local/app_dev.php/api/";
            protected string siteUrl = "http://asianapi.serpentines.ru:8015/app.php/api/";
      //   protected string siteUrl = "http://192.168.1.16/app.php/api/";
         public String getLoginUrl()

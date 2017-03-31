@@ -25,8 +25,8 @@ namespace AsianApi
 
     public class MyTable
     {
-        public MyTable(string TIME, string EVENT, string FULL_TIME_1X2, string FULL_TIME_HDP_1, string FULL_TIME_HDP_2, string FULL_TIME_OU_1, string FULL_TIME_OU_2, string FIRST_HALF_1X2, string FIRST_HALF_HDP_1, string FIRST_HALF_HDP_2, string FIRST_HALF_OU_1, string FIRST_HALF_OU_2,
-                                                  string Bet_FULL_TIME_1X2, string Bet_FULL_TIME_HDP_1, string Bet_FULL_TIME_HDP_2, string Bet_FULL_TIME_OU_1, string Bet_FULL_TIME_OU_2, string Bet_FIRST_HALF_1X2, string Bet_FIRST_HALF_HDP_1, string Bet_FIRST_HALF_HDP_2, string Bet_FIRST_HALF_OU_1, string Bet_FIRST_HALF_OU_2, string LeagueId, string MathcId, string GameId)
+        public MyTable(string TIME, string EVENT, string FULL_TIME_1X2, string FULL_TIME_HDP_1, string FULL_TIME_HDP_2, string FULL_TIME_OU_1, string FULL_TIME_OU_2, string Bet_FULL_TIME_1X2, string Bet_FULL_1X2, string FIRST_HALF_1X2, string FIRST_HALF_HDP_1, string FIRST_HALF_HDP_2, string FIRST_HALF_OU_1, string FIRST_HALF_OU_2,
+                                                  string Bet_FIRST_HALF_1X2, string Bet_FIRST_1X2, string LeagueId, string MathcId, string GameId)
         {
 
             this.TIME = TIME;
@@ -36,22 +36,29 @@ namespace AsianApi
             this.FULL_TIME_HDP_2 = FULL_TIME_HDP_2;
             this.FULL_TIME_OU_1 = FULL_TIME_OU_1;
             this.FULL_TIME_OU_2 = FULL_TIME_OU_2;
+
+            this.Bet_FULL_TIME_1X2 = Bet_FULL_TIME_1X2;
+            this.Bet_FULL_1X2 = Bet_FULL_1X2;
+
             this.FIRST_HALF_1X2 = FIRST_HALF_1X2;
             this.FIRST_HALF_HDP_1 = FIRST_HALF_HDP_1;
             this.FIRST_HALF_HDP_2 = FIRST_HALF_HDP_2;
             this.FIRST_HALF_OU_1 = FIRST_HALF_OU_1;
             this.FIRST_HALF_OU_2 = FIRST_HALF_OU_2;
 
-            this.Bet_FULL_TIME_1X2 = Bet_FULL_TIME_1X2;
-            this.Bet_FULL_TIME_HDP_1 = Bet_FULL_TIME_HDP_1;
+            this.Bet_FIRST_HALF_1X2 = Bet_FIRST_HALF_1X2;
+            this.Bet_FIRST_1X2 = Bet_FIRST_1X2;
+
+   /*       this.Bet_FULL_TIME_HDP_1 = Bet_FULL_TIME_HDP_1;
             this.Bet_FULL_TIME_HDP_2 = Bet_FULL_TIME_HDP_2;
             this.Bet_FULL_TIME_OU_1 = Bet_FULL_TIME_OU_1;
             this.Bet_FULL_TIME_OU_2 = Bet_FULL_TIME_OU_2;
-            this.Bet_FIRST_HALF_1X2 = Bet_FIRST_HALF_1X2;
+            
             this.Bet_FIRST_HALF_HDP_1 = Bet_FIRST_HALF_HDP_1;
             this.Bet_FIRST_HALF_HDP_2 = Bet_FIRST_HALF_HDP_2;
             this.Bet_FIRST_HALF_OU_1 = Bet_FIRST_HALF_OU_1;
-            this.Bet_FIRST_HALF_OU_2 = Bet_FIRST_HALF_OU_2;
+            this.Bet_FIRST_HALF_OU_2 = Bet_FIRST_HALF_OU_2; */
+
             this.LeagueId = LeagueId;
             this.MathcId = MathcId;
             this.GameId = GameId;
@@ -66,22 +73,29 @@ namespace AsianApi
         public string FULL_TIME_HDP_2 { get; set; }
         public string FULL_TIME_OU_1 { get; set; }
         public string FULL_TIME_OU_2 { get; set; }
+
+        public string Bet_FULL_TIME_1X2 { get; set; }
+        public string Bet_FULL_1X2 { get; set; }
+
         public string FIRST_HALF_1X2 { get; set; }
         public string FIRST_HALF_HDP_1 { get; set; }
         public string FIRST_HALF_HDP_2 { get; set; }
         public string FIRST_HALF_OU_1 { get; set; }
         public string FIRST_HALF_OU_2 { get; set; }
 
-        public string Bet_FULL_TIME_1X2 { get; set; }
-        public string Bet_FULL_TIME_HDP_1 { get; set; }
+        
+   /*     public string Bet_FULL_TIME_HDP_1 { get; set; }
         public string Bet_FULL_TIME_HDP_2 { get; set; }
         public string Bet_FULL_TIME_OU_1 { get; set; }
-        public string Bet_FULL_TIME_OU_2 { get; set; }
+        public string Bet_FULL_TIME_OU_2 { get; set; } */
+
         public string Bet_FIRST_HALF_1X2 { get; set; }
-        public string Bet_FIRST_HALF_HDP_1 { get; set; }
+        public string Bet_FIRST_1X2 { get; set; }
+
+  /*      public string Bet_FIRST_HALF_HDP_1 { get; set; }
         public string Bet_FIRST_HALF_HDP_2 { get; set; }
         public string Bet_FIRST_HALF_OU_1 { get; set; }
-        public string Bet_FIRST_HALF_OU_2 { get; set; }
+        public string Bet_FIRST_HALF_OU_2 { get; set; } */
         public string LeagueId { get; set; }
         public string MathcId { get; set; }
         public string GameId { get; set; }
@@ -96,18 +110,20 @@ namespace AsianApi
 
     public class limit
     {
-        public limit(string Id, string v, string bet_column, string diff, bool betted)
+        public limit(string Id, string v, string bet_column, string diff, string bet, bool betted)
         {
             this.Id = Id;
             this.v = v;
             this.bet_column = bet_column;
             this.diff = diff;
+            this.bet = bet;
             this.betted = betted;
         }
         public string Id { get; set; }
         public string v { get; set; }
         public string bet_column { get; set; }
         public string diff { get; set; }
+        public string bet { get; set; }
         public bool betted { get; set; }
     }
 

@@ -47,7 +47,7 @@ namespace AsianApi
             this.password.Hide(); 
             this.userNameLabel.Hide(); 
             this.passwordLabel.Hide();
-            this.ClientSize = new System.Drawing.Size(1760, 768);
+            this.ClientSize = new System.Drawing.Size(1400, 640);
             this.Text = "NODDS";
             
 

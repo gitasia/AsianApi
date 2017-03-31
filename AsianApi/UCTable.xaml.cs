@@ -66,7 +66,15 @@ namespace AsianApi
 
             timer = new DispatcherTimer();
             timer.Tick += new System.EventHandler(timer_Tick);
-            timer.Interval = new TimeSpan(0, 0, 1); //1 sec for cycle to read file apidata
+            timer.Interval = new TimeSpan(0, 0, 20); //20 sec for cycle to read file apidata
+            while (true)
+            {
+               if (File.Exists(path)) // дождались свежеих данных с кеша 
+                {
+                    table();
+                    break;
+                }
+            }
             timer.Start();
         }
 
@@ -112,7 +120,24 @@ namespace AsianApi
                         return;
                     }
                     break;
+                case "Bet_FULL_1X2":
+                    if (path_cell.Bet_FULL_TIME_1X2 == "")
+                    {
+                        e.Cancel = true;
+                        timer.Start();
+                        return;
+                    }
+                    break;
+                case "Bet_FIRST_1X2":
+                    if (path_cell.Bet_FIRST_HALF_1X2 == "")
+                    {
+                        e.Cancel = true;
+                        timer.Start();
+                        return;
+                    }
+                    break;
                 default:
+              //      timer.Start();
                     break;
             }
 
@@ -128,6 +153,7 @@ namespace AsianApi
             bool bett = double.TryParse(edit_cell.Replace(".", ","), out bet);
             double t = 0;
             bool tt;
+            string mybet = "";
             switch (bet_column)
             {
                 case "Bet_FULL_TIME_1X2":
@@ -140,13 +166,26 @@ namespace AsianApi
                     path_cell.Bet_FIRST_HALF_1X2 = edit_cell;
 
                     break;
+                case "Bet_FULL_1X2":
+                    path_cell.Bet_FULL_1X2 = edit_cell;
+                    mybet = "FULL";
+                    break;
+                case "Bet_FIRST_1X2":
+                    path_cell.Bet_FIRST_1X2 = edit_cell;
+                    mybet = "FIRST";
+                    break;
                 default:
                     break;
             }
-            string diff = "under";
-            if (t < bet) diff = "above";
+            
             int z = 0;
-            if (limit2.Count == 0) limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, edit_cell, bet_column, diff, false));
+            if (limit2.Count == 0)
+            {
+                string diff = "under";
+                if (t < bet) diff = "above";
+                limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, edit_cell, bet_column, diff, "", false));
+            }
+
             else
             {
                 for (int ll = 0; ll <= limit2.Count - 1; ll++)
@@ -155,16 +194,32 @@ namespace AsianApi
                     {
                         if (edit_cell != "")
                         {
-                            limit2[ll].v = edit_cell;
-                            limit2[ll].bet_column = bet_column;
-                            limit2[ll].diff = diff;
-                            limit2[ll].betted = false;
+                            switch (mybet)
+                            {
+                                case "":
+                                    string diff = "under";
+                                    if (t < bet) diff = "above";
+                                    limit2[ll].v = edit_cell;
+                                    limit2[ll].bet_column = bet_column;
+                                    limit2[ll].diff = diff;
+                                    limit2[ll].betted = false;
+                                    break;
+                                case "FULL":
+                                case "FIRST":
+                                    limit2[ll].bet = bet.ToString();
+                                    break;
+                            }
                         }
                         else limit2.RemoveAt(ll);
                         z = 1; break;
                     }
                 }
-                if (z == 0) limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, edit_cell, bet_column, diff, false));
+                if (z == 0)
+                {
+                    string diff = "under";
+                    if (t < bet) diff = "above";
+                    limit2.Add(new limit(path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId, edit_cell, bet_column, diff, "", false));
+                }
             }
             timer.Start();
         }
@@ -186,7 +241,7 @@ namespace AsianApi
                                 else Ligs[j] = data.Split(',')[1];
                                 j++;
                             }
-                            if (result.Count <= i) result.Add(new MyTable(data.Split(',')[0], data.Split(',')[1], data.Split(',')[2], data.Split(',')[3], data.Split(',')[4], data.Split(',')[5], data.Split(',')[6], data.Split(',')[7], data.Split(',')[8], data.Split(',')[9], data.Split(',')[10], data.Split(',')[11], "", "", "", "", "", "", "", "", "", "", data.Split(',')[12], data.Split(',')[13], data.Split(',')[14]));
+                            if (result.Count <= i) result.Add(new MyTable(data.Split(',')[0], data.Split(',')[1], data.Split(',')[2], data.Split(',')[3], data.Split(',')[4], data.Split(',')[5], data.Split(',')[6], "", "", data.Split(',')[7], data.Split(',')[8], data.Split(',')[9], data.Split(',')[10], data.Split(',')[11], "", "", data.Split(',')[12], data.Split(',')[13], data.Split(',')[14]));
                             else
                             {
                                 int z = -1;
@@ -203,6 +258,8 @@ namespace AsianApi
                                     {
                                         result[i].Bet_FULL_TIME_1X2 = "";
                                         result[i].Bet_FIRST_HALF_1X2 = "";
+                                        result[i].Bet_FULL_1X2 = "";
+                                        result[i].Bet_FIRST_1X2 = "";
                                     }
                                     else
                                     {
@@ -210,16 +267,19 @@ namespace AsianApi
                                         {
                                             case "Bet_FULL_TIME_1X2":
                                                 result[i].Bet_FULL_TIME_1X2 = limit2[z].v;
+                                                result[i].Bet_FULL_1X2 = limit2[z].bet;
                                                 break;
                                             case "Bet_FIRST_HALF_1X2":
                                                 result[i].Bet_FIRST_HALF_1X2 = limit2[z].v;
+                                                result[i].Bet_FIRST_1X2 = limit2[z].bet;
                                                 break;
                                             default:
                                                 break;
                                         }
+
                                     }
                                 }
-                                result[i] = new MyTable(data.Split(',')[0], data.Split(',')[1], data.Split(',')[2], data.Split(',')[3], data.Split(',')[4], data.Split(',')[5], data.Split(',')[6], data.Split(',')[7], data.Split(',')[8], data.Split(',')[9], data.Split(',')[10], data.Split(',')[11], result[i].Bet_FULL_TIME_1X2, "", result[i].Bet_FULL_TIME_HDP_2, "", result[i].Bet_FULL_TIME_OU_2, result[i].Bet_FIRST_HALF_1X2, "", result[i].Bet_FIRST_HALF_HDP_2, "", result[i].Bet_FIRST_HALF_OU_2, data.Split(',')[12], data.Split(',')[13], data.Split(',')[14]);
+                                result[i] = new MyTable(data.Split(',')[0], data.Split(',')[1], data.Split(',')[2], data.Split(',')[3], data.Split(',')[4], data.Split(',')[5], data.Split(',')[6], result[i].Bet_FULL_TIME_1X2, result[i].Bet_FULL_1X2, data.Split(',')[7], data.Split(',')[8], data.Split(',')[9], data.Split(',')[10], data.Split(',')[11], result[i].Bet_FIRST_HALF_1X2, result[i].Bet_FIRST_1X2, data.Split(',')[12], data.Split(',')[13], data.Split(',')[14]);
                             }
                             i++;
                         }
@@ -318,7 +378,7 @@ namespace AsianApi
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            SolidColorBrush r_brush = Brushes.White;
+            SolidColorBrush r_brush = Brushes.Honeydew;
             object obj = values[0];  // тут получили значение поля TIME
             object obj1 = values[1]; // тут получили значение поля EVENT
             object match = values[5];

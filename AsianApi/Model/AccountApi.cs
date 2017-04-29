@@ -32,5 +32,6 @@ namespace AsianApi.Model
         public int MarketTypeId { get; set; }
         public int sportsType { get; set; }
 
+        public int credit { get; set; }
     }
 }

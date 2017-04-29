@@ -20,8 +20,8 @@ namespace AsianApi
             account = AccountApi.Instance();
             api = new ApiAsian(account);
 
-            userName.Text = "victor";
-            password.Text = "kuznechnaya";
+            userName.Text = "main_bettor";
+            password.Text = "192shilo291";
         }
 
         private void loginButton_Click(object sender, EventArgs e)
@@ -65,9 +65,23 @@ namespace AsianApi
 
             return;
         }
-// закрываем форму
+        // закрываем форму
         private void loginForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            var err = new BaseUp().ConBase();
+            if (err == "")
+            {
+                //   Base = new BaseUp().read_Base(Base, 3);
+                if (UCTable.Base != null)
+                {
+                    err = new BaseUp().write_Base(UCTable.Base, UCTable.user_id, UCTable.credit);
+                    if (err != "") MessageBox.Show(err);
+                }
+            }
+            else
+            {
+                MessageBox.Show(err);
+            }
             Environment.Exit(0);
             return;
         }

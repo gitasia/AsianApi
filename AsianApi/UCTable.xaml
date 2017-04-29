@@ -17,13 +17,32 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="25"></RowDefinition>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="350"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Label Grid.Column="0" Grid.Row="0" MouseUp="Football_MouseUp" Foreground="White" Name="Lab">In Running</Label>
+        <Label Grid.Column="0" Grid.Row="0" MouseUp="Check_Account" Foreground="White" Name="Account_Summary" HorizontalContentAlignment="Center">Account Summary</Label>
+        
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,0,200,122" >Credit</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,22,200,100">Yesterday P/L</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,44,200,78">Today P/L</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,66,200,56">Outstanding</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,88,200,32">Openbets</Label>
+
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,0,50,122" HorizontalContentAlignment="Right" Name="Credit" >0.00</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,22,50,100" HorizontalContentAlignment="Right" Name="YesterdayPL" >0.00</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,44,50,78" HorizontalContentAlignment="Right" Name="TodayPL">0.00</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,66,50,56" HorizontalContentAlignment="Right" Name="Outstanding" >0.00</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,88,50,32" HorizontalContentAlignment="Right" Name="Openbets" >0</Label>
+
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="340" Margin="0,119,0,0" Grid.Row="1" Height="31" Text="My Bets"/>
+       
+
+        <Label Grid.Column="0" Grid.Row="2" MouseUp="Football_MouseUp" Foreground="White" Name="Lab">In Running</Label>
         <DataGrid  x:Name="Football_Ligas" ItemsSource="{Binding Ligas}"
                    MouseUp="Football_Ligas_MouseUp" 
                   VerticalAlignment = "Top" 
@@ -33,7 +52,7 @@
                    Margin="25,0,20,0" 
                    AutoGenerateColumns="False"
                    
-                   Grid.Column="0" Grid.Row="1">
+                   Grid.Column="0" Grid.Row="3">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="LigaName" Binding="{Binding LigaName}" Foreground="LightGray" />
@@ -49,7 +68,7 @@
                         </Setter.Value>
                     </Setter>
                 </Style>
-            </DataGrid.RowStyle> 
+            </DataGrid.RowStyle>
         </DataGrid>
         <Image Source="Resources\head.jpg" 
                Width="1050" 
@@ -71,7 +90,7 @@
                    VerticalScrollBarVisibility="Disabled"
                   
                   
-                   Grid.Column="1" Grid.Row="1">
+                   Grid.Column="1" Grid.Row="1" Grid.RowSpan="3">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="TIME"             Binding="{Binding TIME}"             IsReadOnly="True" Width="70"/>
                 <DataGridTextColumn Header="EVENT"            Binding="{Binding EVENT}"            IsReadOnly="True" Width="281"/>
@@ -81,16 +100,16 @@
                 <DataGridTextColumn Header="FULL_TIME_HDP_2"  Binding="{Binding FULL_TIME_HDP_2}"  IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="FULL_TIME_OU_1"   Binding="{Binding FULL_TIME_OU_1}"   IsReadOnly="True" Width="53"/>
                 <DataGridTextColumn Header="FULL_TIME_OU_2"   Binding="{Binding FULL_TIME_OU_2}"   IsReadOnly="True" Width="53"/>
-                
+
                 <DataGridTextColumn Header="Bet_FULL_TIME_1X2"    Binding="{Binding Bet_FULL_TIME_1X2}" Width="50" Foreground="Green" FontWeight="Bold"/>
                 <DataGridTextColumn Header="Bet_FULL_1X2"         Binding="{Binding Bet_FULL_1X2}"        Width="50" Foreground="Green" FontWeight="Bold"/>
-                
+
                 <DataGridTextColumn Header="FIRST_HALF_1X2"   Binding="{Binding FIRST_HALF_1X2}"   IsReadOnly="True" Width="48" Foreground="Red" FontWeight="Bold"/>
                 <DataGridTextColumn Header="FIRST_HALF_HDP_1" Binding="{Binding FIRST_HALF_HDP_1}" IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="FIRST_HALF_HDP_2" Binding="{Binding FIRST_HALF_HDP_2}" IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="FIRST_HALF_OU_1"  Binding="{Binding FIRST_HALF_OU_1}"  IsReadOnly="True" Width="53"/>
                 <DataGridTextColumn Header="FIRST_HALF_OU_2"  Binding="{Binding FIRST_HALF_OU_2}"  IsReadOnly="True" Width="53"/>
-                
+
                 <DataGridTextColumn Header="Bet_FIRST_HALF_1X2"   Binding="{Binding Bet_FIRST_HALF_1X2}" Width="49" Foreground="Red" FontWeight="Bold"/>
                 <DataGridTextColumn Header="Bet_FIRST_1X2"        Binding="{Binding Bet_FIRST_1X2}"         Width="50" Foreground="Red" FontWeight="Bold"/>
 
@@ -99,15 +118,18 @@
                 <DataGridTextColumn Header="Bet_FULL_TIME_HDP_2"  Binding="{Binding Bet_FULL_TIME_HDP_2}"  IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="Bet_FULL_TIME_OU_1"   Binding="{Binding Bet_FULL_TIME_OU_1}"   IsReadOnly="True" Width="53"/>
                 <DataGridTextColumn Header="Bet_FULL_TIME_OU_2"   Binding="{Binding Bet_FULL_TIME_OU_2}"   IsReadOnly="True" Width="53"/> -->
-               
-          <!--      <DataGridTextColumn Header="Bet_FIRST_HALF_HDP_1" Binding="{Binding Bet_FIRST_HALF_HDP_1}" IsReadOnly="True" Width="47"/>
+
+                <!--      <DataGridTextColumn Header="Bet_FIRST_HALF_HDP_1" Binding="{Binding Bet_FIRST_HALF_HDP_1}" IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="Bet_FIRST_HALF_HDP_2" Binding="{Binding Bet_FIRST_HALF_HDP_2}" IsReadOnly="True" Width="47"/>
                 <DataGridTextColumn Header="Bet_FIRST_HALF_OU_1"  Binding="{Binding Bet_FIRST_HALF_OU_1}"  IsReadOnly="True" Width="53"/>
                 <DataGridTextColumn Header="Bet_FIRST_HALF_OU_2"  Binding="{Binding Bet_FIRST_HALF_OU_2}"  IsReadOnly="True" Width="53"/> -->
 
-                <DataGridTextColumn Header="LeagueId" Binding="{Binding LeagueId}"      IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
-                <DataGridTextColumn Header="MathcId"  Binding="{Binding MathcId}"       IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
-                <DataGridTextColumn Header="GameId"   Binding="{Binding GameId}"        IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
+                <DataGridTextColumn Header="LeagueId"        Binding="{Binding LeagueId}"      IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
+                <DataGridTextColumn Header="MathcId"         Binding="{Binding MathcId}"       IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
+                <DataGridTextColumn Header="GameId"          Binding="{Binding GameId}"        IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
+                <DataGridTextColumn Header="DataGame"        Binding="{Binding DataGame}"      IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
+                <DataGridTextColumn Header="IsActiv"         Binding="{Binding IsActiv}"       IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
+                <DataGridTextColumn Header="WillBeRemoved"   Binding="{Binding WillBeRemoved}" IsReadOnly="True"       Visibility="Hidden"        Width="100"/>
 
             </DataGrid.Columns >
             <DataGrid.RowStyle>
@@ -124,12 +146,16 @@
                                 <Binding Path="GameId"/>
                                 <Binding Path="FIRST_HALF_1X2"/>
                                 <Binding Path="Bet_FIRST_HALF_1X2"/>
+                                <Binding Path="Bet_FULL_1X2"/>
+                                <Binding Path="Bet_FIRST_1X2"/>
+                                <Binding Path="IsActiv"/>
+                                <Binding Path="WillBeRemoved"/>
 
                             </MultiBinding>
                         </Setter.Value>
                     </Setter>
                 </Style>
-            </DataGrid.RowStyle> 
+            </DataGrid.RowStyle>
             <!--    <DataGrid.CellStyle>
                 <Style TargetType="{x:Type DataGridCell}">
                     <Setter Property="Background">
@@ -145,6 +171,21 @@
                 </Style>
             </DataGrid.CellStyle>  d:DesignHeight="300" d:DesignWidth="300"-->
         </DataGrid>
+        
     </Grid>
- 
+
 </UserControl>
+<!-- <DataGrid  x:Name="Accounts" ItemsSource="{Binding Accounts}"
+                  
+                   VerticalAlignment = "Top" 
+                   GridLinesVisibility="Horizontal" 
+                   HeadersVisibility="None" 
+                   BorderThickness="0"
+                   Margin="150,0,50,0" 
+                   AutoGenerateColumns="False"
+                   Grid.Column="0" Grid.Row="1">
+
+    <DataGrid.Columns>
+        <DataGridTextColumn Header="Name_Account" Binding="{Binding Accounts}" Foreground="LightGray" />
+    </DataGrid.Columns>
+    </DataGrid> -->

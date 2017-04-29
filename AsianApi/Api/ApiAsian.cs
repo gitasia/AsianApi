@@ -62,7 +62,7 @@ namespace AsianApi.Api
             account.Id = (int)responseJSON.SelectToken("id");
             account.Username = userName;
             account.Token = (string)responseJSON.SelectToken("token");
-            
+       //     account.credit = (int)responseJSON.SelectToken("credit");
 
             afterLogin(account);
 

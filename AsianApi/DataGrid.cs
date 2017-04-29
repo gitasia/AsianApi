@@ -26,7 +26,8 @@ namespace AsianApi
     public class MyTable
     {
         public MyTable(string TIME, string EVENT, string FULL_TIME_1X2, string FULL_TIME_HDP_1, string FULL_TIME_HDP_2, string FULL_TIME_OU_1, string FULL_TIME_OU_2, string Bet_FULL_TIME_1X2, string Bet_FULL_1X2, string FIRST_HALF_1X2, string FIRST_HALF_HDP_1, string FIRST_HALF_HDP_2, string FIRST_HALF_OU_1, string FIRST_HALF_OU_2,
-                                                  string Bet_FIRST_HALF_1X2, string Bet_FIRST_1X2, string LeagueId, string MathcId, string GameId)
+                                                  string Bet_FIRST_HALF_1X2, string Bet_FIRST_1X2, string LeagueId, string MathcId, string GameId, 
+                                                  string DataGame, string IsActiv, string WillBeRemoved)
         {
 
             this.TIME = TIME;
@@ -63,6 +64,9 @@ namespace AsianApi
             this.MathcId = MathcId;
             this.GameId = GameId;
 
+            this.DataGame = DataGame;
+            this.IsActiv = IsActiv;
+            this.WillBeRemoved = WillBeRemoved;
         }
 
 
@@ -100,9 +104,13 @@ namespace AsianApi
         public string MathcId { get; set; }
         public string GameId { get; set; }
 
+        public string DataGame { get; set; }
+        public string IsActiv { get; set; }
+        public string WillBeRemoved { get; set; }
+
         public override string ToString()
         {
-            return $"{TIME},{EVENT},{FULL_TIME_1X2},{FULL_TIME_HDP_1},{FULL_TIME_HDP_2},{FULL_TIME_OU_1},{FULL_TIME_OU_2},{FIRST_HALF_1X2},{FIRST_HALF_HDP_1},{FIRST_HALF_HDP_2},{FIRST_HALF_OU_1},{FIRST_HALF_OU_2},{LeagueId},{MathcId},{GameId}"; // ,{},{},{},{},{},{},{},{},{},{},{}
+            return $"{TIME},{EVENT},{FULL_TIME_1X2},{FULL_TIME_HDP_1},{FULL_TIME_HDP_2},{FULL_TIME_OU_1},{FULL_TIME_OU_2},{FIRST_HALF_1X2},{FIRST_HALF_HDP_1},{FIRST_HALF_HDP_2},{FIRST_HALF_OU_1},{FIRST_HALF_OU_2},{LeagueId},{MathcId},{GameId},{DataGame}, {IsActiv}, {WillBeRemoved}"; // ,{},{},{},{},{},{},{},{},{},{},{}
         }
 
     }

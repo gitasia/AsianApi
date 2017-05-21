@@ -43,7 +43,7 @@ namespace AsianApi
         public static Int32 user_id;
         public static Int32 credit;
         public static Int32 yesterday, today, outstanding, openbet;
-        public static List<BaseUp.user_bet_table> Base;
+        public static ObservableCollection<BaseUp.user_bet_table> Base;
 
         public UCTable(AccountApi accountApi)
         {
@@ -72,7 +72,7 @@ namespace AsianApi
             timer = new DispatcherTimer();
             timer.Tick += new System.EventHandler(timer_Tick);
             timer.Interval = new TimeSpan(0, 0, 20); //20 sec for cycle to read file apidata
-            Base = new List<BaseUp.user_bet_table>();
+            Base = new ObservableCollection<BaseUp.user_bet_table>();
             var err = new BaseUp().ConBase();
             if (err == "")
             {
@@ -81,6 +81,7 @@ namespace AsianApi
                 yesterday = 0; today = 0; outstanding = 0; openbet = 0;
                 Account_Summary.Content = Account_Summary.Content + ": " + account.Username; // who is user
                 Base = new BaseUp().read_Base(user_id);
+                bets.ItemsSource = Base;
                 if (Base != null)
                 {
                     DateTime parsedDate;
@@ -101,9 +102,9 @@ namespace AsianApi
                                 if (delta.Hours >2 || delta.Days != 0)
                                 {
                             //        credit = credit + (Int32)(Single.Parse(Base[ll].bet.Replace(".", ",")) * 100); // hole, may be checked in server by cron 
-                                    Base.RemoveAt(ll);
-                                    ll--;
-                                    continue;
+                            //        Base.RemoveAt(ll);
+                            //        ll--;
+                            //        continue;
                                 }
                             }
                             if (Base[ll].checked_ && Base[ll].betted)
@@ -124,7 +125,7 @@ namespace AsianApi
                             }
                             if (!Base[ll].betted && (delta.Hours > 3 || delta.Days != 0))
                             {
-                                credit = credit + (Int32)(Single.Parse(Base[ll].bet.Replace(".", ",")) * 100);
+                                if (Base[ll].bet != "") credit = credit + (Int32)(Single.Parse(Base[ll].bet.Replace(".", ",")) * 100);
                                 Base.RemoveAt(ll);
                                 ll--;
                             }
@@ -160,10 +161,37 @@ namespace AsianApi
             //    MessageBox.Show(" TIME: " + path.TIME + "\n EVENT: " + path.FULL_TIME_HDP_2);
         }
 
-        private void Check_Account(object sender, MouseButtonEventArgs e) //Получаем данные из таблицы по клику на строке
+        private void Check_Account(object sender, MouseButtonEventArgs e) 
         {
-            //     path_cell = grid.SelectedItem as MyTable;
-            //    MessageBox.Show(" TIME: " + path.TIME + "\n EVENT: " + path.FULL_TIME_HDP_2);
+            //    
+        }
+
+        private void view_bets(object sender, MouseButtonEventArgs e) //Green - bets on, LightBlue - bets in waiting, Yellow - bets pending, White - bets off 
+        {
+            if (bets.Visibility != Visibility.Visible)
+            {
+                bets.Visibility = Visibility.Visible;
+                L_bets.Background = Brushes.White;
+                bets.ItemsSource = null;
+                bets.ItemsSource = Base;
+            }
+            else
+            {
+                bets.Visibility = Visibility.Hidden;
+                L_bets.Background = Brushes.Gray;
+            }
+        }
+
+        private void bets_MouseUp(object sender, MouseButtonEventArgs e) //View to select Liga from table_bets
+        {
+            BaseUp.user_bet_table path = bets.SelectedItem as BaseUp.user_bet_table;
+            Select_Ligs.Clear();
+            Select_Ligs.Add(path.liga_name);
+            if (Ligas.Count != 0) // brush
+            {
+                MyStr path1 = Ligas[0]; Ligas.RemoveAt(0); Ligas.Insert(0, path1);
+            }
+            set1();
         }
 
         private void Edit_begin(object sender, DataGridBeginningEditEventArgs e) //Начали ввод границы коэффициента
@@ -180,29 +208,29 @@ namespace AsianApi
             switch (bet_column)
             {
                 case "Bet_FULL_TIME_1X2":
-                    if (path_cell.Bet_FIRST_HALF_1X2 != "" || path_cell.FULL_TIME_1X2 == "")
+                    if (path_cell.FULL_TIME_1X2 == "") //path_cell.Bet_FIRST_HALF_1X2 != "" ||  - must be kef booka
                     {
-                        e.Cancel = true;
-                        timer.Start();
-                        return;
+                         e.Cancel = true;
+                         timer.Start();
+                         return;
                     }
-                    break;
+                     break;
                 case "Bet_FIRST_HALF_1X2":
-                    if (path_cell.Bet_FULL_TIME_1X2 != "" || path_cell.FIRST_HALF_1X2 == "")
+                    if (path_cell.FIRST_HALF_1X2 == "") //path_cell.Bet_FULL_TIME_1X2 != "" ||  
                     {
                         e.Cancel = true;
                         timer.Start();
                         return;
                     }
-                    break;
+                     break;
                 case "Bet_FULL_1X2":
-                    if (path_cell.Bet_FULL_TIME_1X2 == "")
+                    if (path_cell.Bet_FULL_TIME_1X2 == "" && path_cell.Bet_FULL_1X2 =="")
                     {
                         e.Cancel = true;
                         timer.Start();
                         return;
                     }
-                    break;
+                     break;
                 case "Bet_FIRST_1X2":
                     if (path_cell.Bet_FIRST_HALF_1X2 == "")
                     {
@@ -210,13 +238,13 @@ namespace AsianApi
                         timer.Start();
                         return;
                     }
+                     break;
+               default:
+                   timer.Start();
                     break;
-                default:
-              //      timer.Start();
-                    break;
-            }
+              }
 
-        }
+            }
 
         private void Edit_cell(object sender, DataGridCellEditEndingEventArgs e) //Закончили ввод коэффициента
         {
@@ -227,6 +255,7 @@ namespace AsianApi
             path_cell = grid.SelectedItem as MyTable;
             double bet;
             bool bett = double.TryParse(edit_cell.Replace(".", ","), out bet);
+            bet = Math.Abs(bet);
             double t = 0;
             bool tt;
             string mybet = "";
@@ -289,32 +318,42 @@ namespace AsianApi
             {
                 if (edit_cell != "")
                 {
-                    string diff = "under";
-                    if (t < bet) diff = "above";
-                    
-                    Base.Add(new BaseUp.user_bet_table(user_id, path_cell.LeagueId, path_cell.MathcId, path_cell.GameId, home_command, away_command, event_ + path_cell.EVENT, liganame, edit_cell, "", false,
-                                                       kef, "", "", "", false, "", path_cell.DataGame, diff, "football", "in running", false));
+                    string diff = "under"; if (t < bet) diff = "above";
+                    Base.Add(new BaseUp.user_bet_table(user_id, path_cell.LeagueId, path_cell.MathcId, path_cell.GameId, 
+                                                       home_command, away_command, event_ + path_cell.EVENT, liganame, 
+                                                       edit_cell, "", false, kef, "", "", "", false, "", path_cell.DataGame,
+                                                       diff, "football", "in running", false));
                 }
-              }
+            }
             else
             {
                for (int ll = 0; ll <= Base.Count - 1; ll++)
                 {
-                  if (Base[ll].event_.Split(',')[1] + Base[ll].liga_id + Base[ll].match_id + Base[ll].game_id == path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId)
-                        {
-                        if (edit_cell != "")
+                  if (Base[ll].event_.Split(',')[1] + Base[ll].liga_id + Base[ll].match_id + Base[ll].game_id 
+                      == path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId && Base[ll].event_.Split(',')[0] == "full" && (event_ == "full," || mybet == "FULL"))
+                        {                                                                            // record new data in bet
+                        if (edit_cell != "" && !Base[ll].betted)
                         {
                             switch (mybet)
                             {
                                 case "":
-                                    string diff = "under";
-                                    if (t < bet) diff = "above";
+                                    string diff = "under"; if (t < bet) diff = "above";
                                     Base[ll].my_odds = edit_cell; Base[ll].event_ = event_ + path_cell.EVENT; Base[ll].diff = diff; Base[ll].betted = false;
                                     break;
                                 case "FULL":
-                                case "FIRST":
-                                    Base[ll].bet = bet.ToString();
-                                    credit = credit - (Int32)bet * 100;
+                     //           case "FIRST":
+                                    if (credit >= (Int32)bet * 100)
+                                    {
+                                        Base[ll].bet = bet.ToString();
+                                        credit = credit - (Int32)bet * 100;
+                                    }
+                                    else
+                                    {
+                                        Base[ll].bet = (credit / 100).ToString();
+                                        credit = 0; 
+                                    }
+                                    break;
+                                default:
                                     break;
                             }
                         }
@@ -322,9 +361,79 @@ namespace AsianApi
                         {
                             if (!Base[ll].betted) // del bet and myodds before bettind
                             {
-                                if (Base[ll].bet != "") credit = credit + (Int32)(Single.Parse(Base[ll].bet.Replace(".", ",")) * 100);
-                                Base.RemoveAt(ll);
-                                ll--;
+                                switch (mybet)
+                                {
+                                    case "":
+                                        Base[ll].my_odds = ""; Base[ll].diff = ""; Base[ll].betted = false;
+                                        break;
+                                    case "FULL":
+                       //             case "FIRST":
+                                        if (Base[ll].bet != "") credit = credit + (Int32)(Single.Parse(Base[ll].bet.Replace(".", ",")) * 100);
+                                        Base[ll].bet = "";
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                if (Base[ll].bet == "" && Base[ll].my_odds == "")
+                                {
+                                    Base.RemoveAt(ll);
+                                    ll--;
+                                }
+                            }
+                        }
+                        z = 1; break;
+                    }
+
+                    if (Base[ll].event_.Split(',')[1] + Base[ll].liga_id + Base[ll].match_id + Base[ll].game_id
+                                          == path_cell.EVENT + path_cell.LeagueId + path_cell.MathcId + path_cell.GameId && Base[ll].event_.Split(',')[0] == "first" && (event_ == "first," || mybet == "FIRST"))
+                    {                                                                            // record new data in bet
+                        if (edit_cell != "" && !Base[ll].betted)
+                        {
+                            switch (mybet)
+                            {
+                                case "":
+                                    string diff = "under"; if (t < bet) diff = "above";
+                                    Base[ll].my_odds = edit_cell; Base[ll].event_ = event_ + path_cell.EVENT; Base[ll].diff = diff; Base[ll].betted = false;
+                                    break;
+                     //           case "FULL":
+                                case "FIRST":
+                                    if (credit >= (Int32)bet * 100)
+                                    {
+                                        Base[ll].bet = bet.ToString();
+                                        credit = credit - (Int32)bet * 100;
+                                    }
+                                    else
+                                    {
+                                        Base[ll].bet = (credit / 100).ToString();
+                                        credit = 0;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            if (!Base[ll].betted) // del bet and myodds before bettind
+                            {
+                                switch (mybet)
+                                {
+                                    case "":
+                                        Base[ll].my_odds = ""; Base[ll].diff = ""; Base[ll].betted = false;
+                                        break;
+                 //                   case "FULL":
+                                    case "FIRST":
+                                        if (Base[ll].bet != "") credit = credit + (Int32)(Single.Parse(Base[ll].bet.Replace(".", ",")) * 100);
+                                        Base[ll].bet = "";
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                if (Base[ll].bet == "" && Base[ll].my_odds == "")
+                                {
+                                    Base.RemoveAt(ll);
+                                    ll--;
+                                }
                             }
                         }
                         z = 1; break;
@@ -334,10 +443,11 @@ namespace AsianApi
                 {
                     if (edit_cell != "")
                     {
-                        string diff = "under";
-                        if (t < bet) diff = "above";
-                        Base.Add(new BaseUp.user_bet_table(user_id, path_cell.LeagueId, path_cell.MathcId, path_cell.GameId, home_command, away_command, event_ + path_cell.EVENT, liganame, edit_cell, "", false,
-                                                       kef, "", "", "", false, "", path_cell.DataGame, diff, "football", "in running", false));
+                        string diff = "under"; if (t < bet) diff = "above";
+                        Base.Add(new BaseUp.user_bet_table(user_id, path_cell.LeagueId, path_cell.MathcId, path_cell.GameId,
+                                                           home_command, away_command, event_ + path_cell.EVENT, liganame, 
+                                                           edit_cell, "", false, kef, "", "", "", false, "", path_cell.DataGame,
+                                                           diff, "football", "in running", false));
                     }
                 }
             }
@@ -367,36 +477,37 @@ namespace AsianApi
                                 int z = -1;
                                 //   if (result[i].Bet_FULL_TIME_1X2 != "")
                                 {
-                                  for (int ll = 0; ll <= Base.Count - 1; ll++)
+                                    for (int ll = 0; ll <= Base.Count - 1; ll++)
                                     {
-                                         if (Base[ll].event_.Split(',')[1] + Base[ll].liga_id + Base[ll].match_id + Base[ll].game_id == data.Split(',')[1] + data.Split(',')[12] + data.Split(',')[13] + data.Split(',')[14])
-                                          {
-                                            z = ll; break;
-                                          }
-                                    }
-                                    if (z == -1)
-                                    {
-                                        result[i].Bet_FULL_TIME_1X2 = "";
-                                        result[i].Bet_FIRST_HALF_1X2 = "";
-                                        result[i].Bet_FULL_1X2 = "";
-                                        result[i].Bet_FIRST_1X2 = "";
-                                    }
-                                    else
-                                    {
-                                        switch (Base[z].event_.Split(',')[0])
+                                        if (Base[ll].event_.Split(',')[1] + Base[ll].liga_id + Base[ll].match_id + Base[ll].game_id == data.Split(',')[1] + data.Split(',')[12] + data.Split(',')[13] + data.Split(',')[14])
                                         {
-                                         case "full":
-                                                result[i].Bet_FULL_TIME_1X2 = Base[z].my_odds;
-                                                result[i].Bet_FULL_1X2 = Base[z].bet;
-                                                break;
-                                         case "first":
-                                                result[i].Bet_FIRST_HALF_1X2 = Base[z].my_odds;
-                                                result[i].Bet_FIRST_1X2 = Base[z].bet;
-                                                break;
-                                            default:
-                                                break;
+                                            z = ll; //break; (if one event in row) we have max two events when odds pointed on 1st time & game
                                         }
-                                    }
+                                        //}
+                                        if (z == -1)
+                                        {
+                                            result[i].Bet_FULL_TIME_1X2 = "";
+                                            result[i].Bet_FIRST_HALF_1X2 = "";
+                                            result[i].Bet_FULL_1X2 = "";
+                                            result[i].Bet_FIRST_1X2 = "";
+                                        }
+                                        else
+                                        {
+                                            switch (Base[z].event_.Split(',')[0])
+                                            {
+                                                case "full":
+                                                    result[i].Bet_FULL_TIME_1X2 = Base[z].my_odds;
+                                                    result[i].Bet_FULL_1X2 = Base[z].bet;
+                                                    break;
+                                                case "first":
+                                                    result[i].Bet_FIRST_HALF_1X2 = Base[z].my_odds;
+                                                    result[i].Bet_FIRST_1X2 = Base[z].bet;
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
+                                    }// for
                                 }
                                 result[i] = new MyTable(data.Split(',')[0], data.Split(',')[1], data.Split(',')[2], data.Split(',')[3], data.Split(',')[4], data.Split(',')[5], data.Split(',')[6], result[i].Bet_FULL_TIME_1X2, result[i].Bet_FULL_1X2, data.Split(',')[7], data.Split(',')[8], data.Split(',')[9], data.Split(',')[10], data.Split(',')[11], result[i].Bet_FIRST_HALF_1X2, result[i].Bet_FIRST_1X2, data.Split(',')[12], data.Split(',')[13], data.Split(',')[14], data.Split(',')[15], data.Split(',')[16], data.Split(',')[17]);
                             }
@@ -413,7 +524,7 @@ namespace AsianApi
                         int z = -1;
                         for (int ii = 0; ii < result.Count-1; ii++)
                         {
-                            if ((Base[ll].event_.Split(',')[1] + Base[ll].liga_id + Base[ll].match_id + Base[ll].game_id == result[ii].EVENT + result[ii].LeagueId + result[ii].MathcId + result[ii].GameId) && !Base[ll].checked_ && Base[ll].betted)
+                            if ((Base[ll].event_.Split(',')[1] + Base[ll].liga_id + Base[ll].match_id + Base[ll].game_id == result[ii].EVENT + result[ii].LeagueId + result[ii].MathcId + result[ii].GameId) && !Base[ll].checked_) // && Base[ll].betted)
                             {
                                 DateTime parsedDate; DateTime date_t = DateTime.UtcNow;
                                 if (DateTime.TryParse(Base[ll].data_game, out parsedDate))
@@ -424,15 +535,23 @@ namespace AsianApi
                                          if (result[ii].TIME == "*") Base[ll].result_full = result[ii - 2].TIME;
                                          if (result[ii].TIME.IndexOf(":") != -1) Base[ll].result_full = result[ii].TIME;
                                          if (result[ii].TIME.IndexOf(" ") != -1) Base[ll].result_full = result[ii - 1].TIME;
-                                         if (parsedDate.Day == date_t.Day && delta.Hours < 1 && delta.Minutes < 59) // for fiks result first time
+                                         if(Base[ll].event_.Split(',')[0] == "full" && result[ii].FULL_TIME_1X2 != "") Base[ll].kef = result[ii].FULL_TIME_1X2;
+                                         if (parsedDate.Day == date_t.Day && delta.Hours < 1 && delta.Minutes < 50) // for fiks result first time
                                             {
                                                if (result[ii].TIME == "*") Base[ll].result_first = result[ii - 2].TIME;
                                                if (result[ii].TIME.IndexOf(":") != -1) Base[ll].result_first = result[ii].TIME;
                                                if (result[ii].TIME.IndexOf(" ") != -1) Base[ll].result_first = result[ii - 1].TIME;
-                                           }
+                                            if (Base[ll].event_.Split(',')[0] == "first" && result[ii].FIRST_HALF_1X2 != "") Base[ll].kef = result[ii].FIRST_HALF_1X2;
+                                        }
                                          if (parsedDate.Day == date_t.Day && delta.Hours >=1 && !Base[ll].checked_ && Base[ll].event_.Split(',')[0] == "first") // check after first time
                                         {
-                                            check(ll);
+                                            if (Base[ll].betted) check(ll);
+                                            else
+                                            {
+                                                credit = credit + (Int32)(Single.Parse(Base[ll].bet.Replace(".", ",")) * 100);
+                                                Base.RemoveAt(ll);
+                                                ll--;
+                                            }
                                         }
                                      }
                                     if (Base[ll].checked_ && Base[ll].betted)
@@ -453,11 +572,17 @@ namespace AsianApi
                                 z = ll; break;
                             }
                         }
-                        if (z == -1)
+                        if (z == -1) // to be removed
                         {
                             if (Base[ll].betted && !Base[ll].checked_)
                             {  
                                 check(ll);
+                            }
+                            if(!Base[ll].betted)
+                            {
+                                credit = credit + (Int32)(Single.Parse(Base[ll].bet.Replace(".", ",")) * 100);
+                                Base.RemoveAt(ll);
+                                ll--;
                             }
                         }
                     }
@@ -465,8 +590,7 @@ namespace AsianApi
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.Message);
-             
+ //                   MessageBox.Show(e.Message);
                     return;
                 }
             }
@@ -613,7 +737,7 @@ namespace AsianApi
         private void raise_credit(int ll)
         {
             Base[ll].on_off = true;
-            Base[ll].mani = ((Single.Parse(Base[ll].kef.Replace(".", ",")) * Single.Parse(Base[ll].bet.Replace(".", ",")))).ToString();
+            Base[ll].mani = ((Single.Parse(Base[ll].my_odds.Replace(".", ",")) * Single.Parse(Base[ll].bet.Replace(".", ",")))).ToString();
             credit = credit + (Int32)(Single.Parse(Base[ll].mani.Replace(".", ",")) * 100);
         }
 
@@ -621,13 +745,13 @@ namespace AsianApi
         {
             Base[ll].on_off = false;
             Base[ll].mani = (-Single.Parse(Base[ll].bet.Replace(".", ","))).ToString();
-            credit = credit + (Int32)(Single.Parse(Base[ll].mani.Replace(".", ",")) * 100);
+     //       credit = credit + (Int32)(Single.Parse(Base[ll].mani.Replace(".", ",")) * 100);
         }
     }
 
     class MultiBindingConverter_myConv : IMultiValueConverter
     {
-        private Int32 bets; 
+        private Int32 bets;
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             SolidColorBrush r_brush = Brushes.Honeydew;
@@ -640,11 +764,7 @@ namespace AsianApi
                 {
                     foreach (MyStr Lig in UCTable.Ligas)
                     {
-                        if ((obj1.ToString()) == ((MyStr)Lig).LigaName)
-                        {
-                            r_brush = Brushes.LightGray; //строка color
-                            return r_brush;
-                        }
+                        if ((obj1.ToString()) == ((MyStr)Lig).LigaName)   return Brushes.LightGray; //строка color
                     }
                 }
             }
@@ -656,7 +776,7 @@ namespace AsianApi
                 object Bet_H1x2 = values[8];
                 object meni_full = values[9];
                 object meni_first = values[10];
-                object IsActive = values[11]; //IsActive.ToString() == "True" &&
+                object IsActive = values[11]; //IsActive.ToString() == " True" &&
                 if (IsActive.ToString() == " True" && ((Bet_F1x2.ToString() != "" && F1x2.ToString() != "") || (Bet_H1x2.ToString() != "" && H1x2.ToString() != ""))) // имеются границы и кэфы не пустые
                 {
                     object liga = values[4];
@@ -665,129 +785,54 @@ namespace AsianApi
                     int z = -1;
                     for (int ll = 0; ll <= UCTable.Base.Count - 1; ll++) //odds
                     {
-                       if (UCTable.Base[ll].event_.Split(',')[1] + UCTable.Base[ll].liga_id + UCTable.Base[ll].match_id + UCTable.Base[ll].game_id == obj1.ToString() + liga.ToString() + match.ToString() + game.ToString())
-                         {
-                            z = ll; break;
-                         }
-                    }
-                    if (z != -1)
-                    {
-                        if ((Bet_F1x2.ToString() != "" && F1x2.ToString() != "" && meni_full.ToString() != ""))
+                        if (UCTable.Base[ll].event_.Split(',')[1] + UCTable.Base[ll].liga_id + UCTable.Base[ll].match_id + UCTable.Base[ll].game_id == obj1.ToString() + liga.ToString() + match.ToString() + game.ToString())
                         {
-                            double tconv;
-                            double betconv;
-                            bool ttconv = double.TryParse(F1x2.ToString().Replace(".", ","), out tconv);
-                            bool bettconv = double.TryParse(Bet_F1x2.ToString().Replace(".", ","), out betconv);
-                            if (UCTable.Base[z].diff == "under")
+                            z = ll; //break;
+                        }
+                        //}
+                        if (z != -1)
+                        {
+                            if ((Bet_F1x2.ToString() != "" && F1x2.ToString() != "" && meni_full.ToString() != "") && UCTable.Base[z].event_.Split(',')[0] == "full")
                             {
-                                if (UCTable.Base[z].betted)
+                                double tconv;
+                                double betconv;
+                                bool ttconv = double.TryParse(F1x2.ToString().Replace(".", ","), out tconv);
+                                bool bettconv = double.TryParse(Bet_F1x2.ToString().Replace(".", ","), out betconv);
+                                if (UCTable.Base[z].diff == "under")
                                 {
-                                    r_brush = Brushes.LightBlue; return r_brush; // brush forever
+                                    if (UCTable.Base[z].betted) r_brush = Brushes.LightBlue; // brush forever
+                                    else
+                                    if (betconv >= tconv) return betting(z, tconv, Brushes.LightBlue);
                                 }
                                 else
                                 {
-                                    if (betconv >= tconv)
-                                    {
-                                        // betting   for example : string kef_betting = new Listener(..).betting(....)
-                                                                //  if (kef_betting != "")
-                                                                // { UcTable.Base[z].kef=kef_betting;
-                                        UCTable.Base[z].betted = true; // fiks bet
-                                        UCTable.Base[z].data_bet = DateTime.UtcNow.ToString();
-                                        bets = (Int32)(Single.Parse(UCTable.Base[z].bet.Replace(".", ",")) * 100);
-                                        UCTable.outstanding = UCTable.outstanding + bets;
-                               //         UCTable.credit = UCTable.credit - bets;
-                                        UCTable.openbet = UCTable.openbet + 1;
-                                        r_brush = Brushes.LightBlue;
-                                        return r_brush;
-                                        //}
-                                    }
+                                    if (UCTable.Base[z].betted) r_brush = Brushes.LightCoral; // brush forever
+                                    else
+                                    if (betconv <= tconv) return betting(z, tconv, Brushes.LightCoral);
                                 }
                             }
-                            else
+                            if ((Bet_H1x2.ToString() != "" && H1x2.ToString() != "" && meni_first.ToString() != "") && UCTable.Base[z].event_.Split(',')[0] == "first")
                             {
-                               if (UCTable.Base[z].betted)
+                                double tconv;
+                                double betconv;
+                                bool ttconv = double.TryParse(H1x2.ToString().Replace(".", ","), out tconv);
+                                bool bettconv = double.TryParse(Bet_H1x2.ToString().Replace(".", ","), out betconv);
+                                if (UCTable.Base[z].diff == "under")
                                 {
-                                    r_brush = Brushes.LightCoral; return r_brush; // brush forever
+                                    if (UCTable.Base[z].betted) r_brush = Brushes.LightSalmon; // brush forever
+                                    else
+                                    if (betconv >= tconv) return betting(z, tconv, Brushes.LightSalmon);
                                 }
                                 else
                                 {
-                                    if (betconv <= tconv)
-                                    {
-                                        // betting   for example : string kef_betting = new Listener(..).betting(....)
-                                        //  if (kef_betting != "")
-                                        // { UcTable.Base[z].kef=kef_betting;
-                                        UCTable.Base[z].betted = true; // fiks bet
-                                        UCTable.Base[z].data_bet = DateTime.UtcNow.ToString();
-                                        bets = (Int32)(Single.Parse(UCTable.Base[z].bet.Replace(".", ",")) * 100);
-                                        UCTable.outstanding = UCTable.outstanding + bets;
-                            //            UCTable.credit = UCTable.credit - bets;
-                                        UCTable.openbet = UCTable.openbet + 1;
-                                        r_brush = Brushes.LightCoral;
-                                        return r_brush;
-                                    }
+                                    if (UCTable.Base[z].betted) r_brush = Brushes.LightPink; // brush forever
+                                    else
+                                    if (betconv <= tconv) return betting(z, tconv, Brushes.LightPink);
                                 }
-                                
                             }
                         }
-                        if ((Bet_H1x2.ToString() != "" && H1x2.ToString() != "" && meni_first.ToString() != ""))
-                        {
-                            double tconv;
-                            double betconv;
-                            bool ttconv = double.TryParse(H1x2.ToString().Replace(".", ","), out tconv);
-                            bool bettconv = double.TryParse(Bet_H1x2.ToString().Replace(".", ","), out betconv);
-                            if (UCTable.Base[z].diff == "under")
-                            {
-                               if (UCTable.Base[z].betted)
-                                {
-                                    r_brush = Brushes.LightSalmon; return r_brush; // brush forever
-                                }
-                                else
-                                {
-                                    if (betconv >= tconv)
-                                    {
-                                        // betting   for example : string kef_betting = new Listener(..).betting(....)
-                                        //  if (kef_betting != "")
-                                        // { UcTable.Base[z].kef=kef_betting;
-                                        UCTable.Base[z].betted = true; // fiks bet
-                                        UCTable.Base[z].data_bet = DateTime.UtcNow.ToString();
-                                        bets = (Int32)(Single.Parse(UCTable.Base[z].bet.Replace(".", ",")) * 100);
-                                        UCTable.outstanding = UCTable.outstanding + bets;
-                             //           UCTable.credit = UCTable.credit - bets;
-                                        UCTable.openbet = UCTable.openbet + 1;
-                                        r_brush = Brushes.LightSalmon;
-                                        return r_brush;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (UCTable.Base[z].betted)
-                                {
-                                    r_brush = Brushes.LightPink; return r_brush; // brush forever
-                                }
-                                else
-                                {
-                                    if (betconv <= tconv)
-                                    {
-                                        // betting   for example : string kef_betting = new Listener(..).betting(....)
-                                        //  if (kef_betting != "")
-                                        // { UcTable.Base[z].kef=kef_betting;
-                                        UCTable.Base[z].betted = true; // fiks bet
-                                        UCTable.Base[z].data_bet = DateTime.UtcNow.ToString();
-                                        bets = (Int32)(Single.Parse(UCTable.Base[z].bet.Replace(".", ",")) * 100);
-                                        UCTable.outstanding = UCTable.outstanding + bets;
-                              //          UCTable.credit = UCTable.credit - bets;
-                                        UCTable.openbet = UCTable.openbet + 1;
-                                        r_brush = Brushes.LightPink;
-                                        return r_brush;
-                                    }
-                                }
-                                
-                            }
-                        }
-                    }
+                    } // for
                 }
-
             }
             return r_brush;
         }
@@ -795,6 +840,20 @@ namespace AsianApi
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+       private SolidColorBrush betting(int z, double tconv, SolidColorBrush color)
+        {
+            // betting   for example : string kef_betting = new Listener(..).betting(....)
+            //  if (kef_betting != "")
+            // { UcTable.Base[z].kef=kef_betting;
+            UCTable.Base[z].betted = true; // fiks bet
+            UCTable.Base[z].data_bet = DateTime.UtcNow.ToString();
+            bets = (Int32)(Single.Parse(UCTable.Base[z].bet.Replace(".", ",")) * 100);
+            UCTable.outstanding = UCTable.outstanding + bets;
+            UCTable.Base[z].my_odds = tconv.ToString();
+            UCTable.openbet = UCTable.openbet + 1;
+            return color;
         }
     }
     class MultiBindingConverter_ : IMultiValueConverter
@@ -825,4 +884,37 @@ namespace AsianApi
         }
     }
 
+    class MultiBindingConverter_Base : IMultiValueConverter
+    {
+
+        public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            object obj = values[0];  // тут получили значение поля LigaName в таблице с лигами
+            object bet = values[1];
+            object betted = values[2];
+            SolidColorBrush r_brush = Brushes.Snow;
+            string ss = obj.ToString();
+            if ((Boolean)obj)
+                    {
+                        r_brush = Brushes.LightGreen;
+                        return r_brush;
+                    }
+            if (bet.ToString() == "" && (Boolean)betted)
+            {
+                r_brush = Brushes.Yellow;
+                return r_brush;
+            }
+            if (!(Boolean)betted)
+            {
+                r_brush = Brushes.LightBlue;
+                return r_brush;
+            }
+            return r_brush;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

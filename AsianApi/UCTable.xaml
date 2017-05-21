@@ -11,6 +11,7 @@
     <UserControl.Resources>
         <local:MultiBindingConverter_myConv x:Key="MultiBindingConverter_myConv" />
         <local:MultiBindingConverter_ x:Key="MultiBindingConverter_" />
+        <local:MultiBindingConverter_Base x:Key="MultiBindingConverter_Base" />
 
     </UserControl.Resources>
 
@@ -22,36 +23,35 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350"></ColumnDefinition>
+            <ColumnDefinition Width="300"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Label Grid.Column="0" Grid.Row="0" MouseUp="Check_Account" Foreground="White" Name="Account_Summary" HorizontalContentAlignment="Center">Account Summary</Label>
-        
+
         <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,0,200,122" >Credit</Label>
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,22,200,100">Yesterday P/L</Label>
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,44,200,78">Today P/L</Label>
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,66,200,56">Outstanding</Label>
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,88,200,32">Openbets</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,32,200,90">Yesterday P/L</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,54,200,68">Today P/L</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,76,200,46">Outstanding</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="0,98,200,22">Openbets</Label>
 
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,0,50,122" HorizontalContentAlignment="Right" Name="Credit" >0.00</Label>
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,22,50,100" HorizontalContentAlignment="Right" Name="YesterdayPL" >0.00</Label>
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,44,50,78" HorizontalContentAlignment="Right" Name="TodayPL">0.00</Label>
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,66,50,56" HorizontalContentAlignment="Right" Name="Outstanding" >0.00</Label>
-        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,88,50,32" HorizontalContentAlignment="Right" Name="Openbets" >0</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,0,10,122" HorizontalContentAlignment="Right" Name="Credit" >0.00</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,32,10,90" HorizontalContentAlignment="Right" Name="YesterdayPL" >0.00</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,54,10,68" HorizontalContentAlignment="Right" Name="TodayPL">0.00</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,76,10,46" HorizontalContentAlignment="Right" Name="Outstanding" >0.00</Label>
+        <Label Grid.Column="0" Grid.Row="1" Foreground="White" Margin="200,98,10,22" HorizontalContentAlignment="Right" Name="Openbets" >0</Label>
 
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="340" Margin="0,119,0,0" Grid.Row="1" Height="31" Text="My Bets"/>
-       
-
+        <Label x:Name="L_bets"  MouseUp="view_bets" HorizontalAlignment="Left" Margin="0,125,0,0" Grid.Row="1" VerticalAlignment="Top"  Width="290" Background="Gray" HorizontalContentAlignment="Center" Grid.ColumnSpan="2">My bets</Label>
         <Label Grid.Column="0" Grid.Row="2" MouseUp="Football_MouseUp" Foreground="White" Name="Lab">In Running</Label>
         <DataGrid  x:Name="Football_Ligas" ItemsSource="{Binding Ligas}"
                    MouseUp="Football_Ligas_MouseUp" 
-                  VerticalAlignment = "Top" 
+                   VerticalAlignment = "Top" 
                    GridLinesVisibility="None" 
                    HeadersVisibility="None" 
                    BorderThickness="0"
-                   Margin="25,0,20,0" 
+                   Margin="5,0,10,0" 
                    AutoGenerateColumns="False"
-                   
+                   HorizontalScrollBarVisibility="Disabled"
+                   VerticalScrollBarVisibility="Disabled"
                    Grid.Column="0" Grid.Row="3">
 
             <DataGrid.Columns>
@@ -71,12 +71,13 @@
             </DataGrid.RowStyle>
         </DataGrid>
         <Image Source="Resources\head.jpg" 
-               Width="1050" 
+               Width="1006" 
+               
                HorizontalAlignment="Left" 
                VerticalAlignment = "Top" 
-               Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"/>
+               Grid.Column="1" Grid.Row="0" Margin="0,0,0,0" Grid.RowSpan="2"/>
         <DataGrid  x:Name="grid"  ItemsSource="{Binding Path=Itog_result}"
-                   Width="1048"
+                   Width="1006"
                    HorizontalAlignment="Left"
                    VerticalAlignment = "Top" 
                    Margin="0,23,0,0"
@@ -93,7 +94,7 @@
                    Grid.Column="1" Grid.Row="1" Grid.RowSpan="3">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="TIME"             Binding="{Binding TIME}"             IsReadOnly="True" Width="70"/>
-                <DataGridTextColumn Header="EVENT"            Binding="{Binding EVENT}"            IsReadOnly="True" Width="281"/>
+                <DataGridTextColumn Header="EVENT"            Binding="{Binding EVENT}"            IsReadOnly="True" Width="237"/>
 
                 <DataGridTextColumn Header="FULL_TIME_1X2"    Binding="{Binding FULL_TIME_1X2}"    IsReadOnly="True" Width="48" Foreground="Green" FontWeight="Bold"/>
                 <DataGridTextColumn Header="FULL_TIME_HDP_1"  Binding="{Binding FULL_TIME_HDP_1}"  IsReadOnly="True" Width="47"/>
@@ -102,7 +103,7 @@
                 <DataGridTextColumn Header="FULL_TIME_OU_2"   Binding="{Binding FULL_TIME_OU_2}"   IsReadOnly="True" Width="53"/>
 
                 <DataGridTextColumn Header="Bet_FULL_TIME_1X2"    Binding="{Binding Bet_FULL_TIME_1X2}" Width="50" Foreground="Green" FontWeight="Bold"/>
-                <DataGridTextColumn Header="Bet_FULL_1X2"         Binding="{Binding Bet_FULL_1X2}"        Width="50" Foreground="Green" FontWeight="Bold"/>
+                <DataGridTextColumn Header="Bet_FULL_1X2"         Binding="{Binding Bet_FULL_1X2}"        Width="52" Foreground="Green" FontWeight="Bold"/>
 
                 <DataGridTextColumn Header="FIRST_HALF_1X2"   Binding="{Binding FIRST_HALF_1X2}"   IsReadOnly="True" Width="48" Foreground="Red" FontWeight="Bold"/>
                 <DataGridTextColumn Header="FIRST_HALF_HDP_1" Binding="{Binding FIRST_HALF_HDP_1}" IsReadOnly="True" Width="47"/>
@@ -111,7 +112,7 @@
                 <DataGridTextColumn Header="FIRST_HALF_OU_2"  Binding="{Binding FIRST_HALF_OU_2}"  IsReadOnly="True" Width="53"/>
 
                 <DataGridTextColumn Header="Bet_FIRST_HALF_1X2"   Binding="{Binding Bet_FIRST_HALF_1X2}" Width="49" Foreground="Red" FontWeight="Bold"/>
-                <DataGridTextColumn Header="Bet_FIRST_1X2"        Binding="{Binding Bet_FIRST_1X2}"         Width="50" Foreground="Red" FontWeight="Bold"/>
+                <DataGridTextColumn Header="Bet_FIRST_1X2"        Binding="{Binding Bet_FIRST_1X2}"         Width="49" Foreground="Red" FontWeight="Bold"/>
 
 
                 <!--      <DataGridTextColumn Header="Bet_FULL_TIME_HDP_1"  Binding="{Binding Bet_FULL_TIME_HDP_1}"  IsReadOnly="True" Width="47"/>
@@ -171,7 +172,87 @@
                 </Style>
             </DataGrid.CellStyle>  d:DesignHeight="300" d:DesignWidth="300"-->
         </DataGrid>
-        
+
+        <DataGrid  x:Name="bets"  ItemsSource="{Binding Path=Base}"
+                   Width="1310"
+                   Opacity="0.95"
+                   Margin="0,0,10,0"
+                   MouseUp="bets_MouseUp" 
+                   GridLinesVisibility="Horizontal" 
+                   HeadersVisibility="All"
+                   AutoGenerateColumns="False"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment = "Top"
+                   Visibility="Hidden"
+                   VerticalScrollBarVisibility="Disabled"
+                   Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Дата и время"       Binding="{Binding data_game}"    IsReadOnly="True"  Width="110"/>
+                <DataGridTextColumn Header="Лига"       Binding="{Binding liga_name}"    IsReadOnly="True"  Width="236"/>
+                <DataGridTextColumn Header="Хозяева"    Binding="{Binding home_command}" IsReadOnly="True"  Width="160"/>
+                <DataGridTextColumn Header="Гости"    Binding="{Binding away_command}" IsReadOnly="True"  Width="160"/>
+                <DataGridTextColumn Header="Событие"          Binding="{Binding event_}"       IsReadOnly="True"  Width="160"/>
+                <DataGridTextColumn Header="Кэф ставки"         Binding="{Binding my_odds}"      IsReadOnly="True"  Width="80" >
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Кэф игры"             Binding="{Binding kef}"          IsReadOnly="True"  Width="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Ставка"             Binding="{Binding bet}"          IsReadOnly="True"  Width="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="1й тайм"    Binding="{Binding result_first}" IsReadOnly="True"  Width="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Игра"     Binding="{Binding result_full}"  IsReadOnly="True"  Width="80">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Сумма"            Binding="{Binding mani}"         IsReadOnly="True"  Width="70">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="on_off" Binding="{Binding on_off}" IsReadOnly="True" Visibility="Hidden" Width="47"/>
+
+            </DataGrid.Columns >
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource MultiBindingConverter_Base}">
+                                <Binding Path="on_off"/>
+                                <Binding Path="mani"/>
+                                <Binding Path="betted"/>
+                            </MultiBinding>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DataGrid.RowStyle>
+
+        </DataGrid>
+
     </Grid>
 
 </UserControl>

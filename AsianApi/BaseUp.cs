@@ -9,6 +9,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using MySql.Data.Types;
 using MySql.Data;
+using System.Collections.ObjectModel;
 
 namespace AsianApi
 {
@@ -22,7 +23,7 @@ namespace AsianApi
         public String ConBase()
         {
             String err = "";
-            connect_base(err);
+          err=  connect_base(err);
             return err;
         }
 
@@ -33,13 +34,13 @@ namespace AsianApi
             return credit;
         }
 
-        public List<user_bet_table> read_Base(Int32 user_id)
+        public ObservableCollection<user_bet_table> read_Base(Int32 user_id)
         {
             read_table(user_id);
             return Base;
         }
 
-        public String write_Base(List<user_bet_table> Base, Int32 id_user, Int32 credit_user)
+        public String write_Base(ObservableCollection<user_bet_table> Base, Int32 id_user, Int32 credit_user)
         {
             String err = "";
             write_table(Base, id_user, credit_user);
@@ -77,31 +78,31 @@ namespace AsianApi
                 this.checked_ = checked_;
                 
             }
-            public Int32 user_id;
-            public String liga_id;
-            public String match_id;
-            public String game_id;
-            public String home_command;
-            public String away_command;
-            public String event_; // first, full + *_command or draw
-            public String liga_name;
-            public String my_odds;
-            public String bet;
-            public Boolean betted;
-            public String kef;
-            public String data_bet; // timestamp
-            public String result_first; // score
-            public String result_full;
-            public Boolean on_off; // itog
-            public String mani; // in this bet
-            public String data_game; // + time
-            public String diff; // under, above 
-            public String sport; // football, basketball, ..
-            public String live; // in running, today, early, ..
-            public Boolean checked_;
+            public Int32 user_id { get; set; }
+            public String liga_id { get; set; }
+            public String match_id { get; set; }
+            public String game_id { get; set; }
+            public String home_command { get; set; }
+            public String away_command { get; set; }
+            public String event_ { get; set; } // first, full + *_command or draw
+            public String liga_name { get; set; }
+            public String my_odds { get; set; }
+            public String bet { get; set; }
+            public Boolean betted { get; set; }
+            public String kef { get; set; }
+            public String data_bet { get; set; } // timestamp
+            public String result_first { get; set; } // score
+            public String result_full { get; set; }
+            public Boolean on_off { get; set; } // itog
+            public String mani { get; set; } // in this bet
+            public String data_game { get; set; } // + time
+            public String diff { get; set; } // under, above 
+            public String sport { get; set; } // football, basketball, ..
+            public String live { get; set; } // in running, today, early, ..
+            public Boolean checked_ { get; set; }
         }
 
-        public void connect_base(String err)
+        public String connect_base(String err)
         {
           try
             {
@@ -113,8 +114,9 @@ namespace AsianApi
             catch (MySqlException ex)
             {
                 err = ex.Message;
-                throw;
+                //throw;
             }
+            return err;
         }
         public void read_table(Int32 user_id)
         {
@@ -129,7 +131,7 @@ namespace AsianApi
                 cmd.CommandText = "SELECT Count(*) as row_count FROM `user_bet` where `user_id`=" + user_id + ";";
                 rr = cmd.ExecuteScalar();
                 rows = Convert.ToInt32(rr.ToString());
-                Base = new List<user_bet_table>();
+                Base = new ObservableCollection<user_bet_table>();
                 cmd.CommandText = "select * from `user_bet`where `user_id`=" + user_id + ";";
                 r = cmd.ExecuteReader();
                 while (r.Read())
@@ -156,8 +158,8 @@ namespace AsianApi
             {
                
                 MessageBox.Show(ex.Message);
-                Base.Clear();
-                throw;
+           //     Base.Clear();
+            //    throw;
              //   return;
             }
         }
@@ -186,12 +188,12 @@ namespace AsianApi
 
                 MessageBox.Show(ex.Message);
                 credit=0;
-                throw;
+           //     throw;
                 //   return;
             }
         }
 
-        public void write_table(List<user_bet_table> Base, Int32 id_user, Int32 credit_user)
+        public void write_table(ObservableCollection<user_bet_table> Base, Int32 id_user, Int32 credit_user)
         {
           try
             {
@@ -247,13 +249,14 @@ namespace AsianApi
             catch (MySqlException ex)
             {
                 err = ex.Message;
-                throw;
+            //    throw;
             }
 
         }
-        private List<user_bet_table> Base;
+        private ObservableCollection<user_bet_table> Base;
         private String err;
-        private String connParams = "Server=192.168.1.16; Port=3306; Database=symfony; User ID=root; Password=db-4dm1n; Pooling=false;";
+     //   private String connParams = "Server=192.168.1.16; Port=3306; Database=symfony; User ID=root; Password=db-4dm1n; Pooling=false;";
+        private String connParams = "Server=80.254.125.117; Port=2333; Database=symfony; User ID=root; Password=db-4dm1n; Pooling=false;";
         private IDbConnection conn;
         private IDbCommand cmd;
       //  private Int32 id_user;

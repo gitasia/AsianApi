@@ -80,7 +80,21 @@ namespace AsianApi.Model.Worker
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message + " В реале пока игр нет");
+                MessageBox.Show(e.Message + " В реале пока лиг нет");
+                var err = new BaseUp().ConBase();
+                if (err == "")
+                {
+                    //   Base = new BaseUp().read_Base(Base, 3);
+                    if (UCTable.Base != null)
+                    {
+                        err = new BaseUp().write_Base(UCTable.Base, UCTable.user_id, UCTable.credit);
+                        if (err != "") MessageBox.Show(err);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(err);
+                }
                 Environment.Exit(0);
                 return;
             }
@@ -208,7 +222,7 @@ namespace AsianApi.Model.Worker
                 }
             } catch (Exception e)
             {
-              MessageBox.Show(" В реале пока игр нет. ");
+              MessageBox.Show( e.Message + " В реале пока игр нет. ");
                 var err = new BaseUp().ConBase();
                 if (err == "")
                 {

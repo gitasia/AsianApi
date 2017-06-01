@@ -120,6 +120,9 @@
     <Compile Include="Api\Model\Subevent.cs" />
     <Compile Include="Api\Model\Team.cs" />
     <Compile Include="BaseUp.cs" />
+    <Compile Include="ControlBet.xaml.cs">
+      <DependentUpon>ControlBet.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DataGrid.cs" />
     <Compile Include="loginForm.cs">
       <SubType>Form</SubType>
@@ -187,6 +190,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="ControlBet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UCTable.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

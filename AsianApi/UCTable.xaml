@@ -188,7 +188,7 @@
                    Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Grid.RowSpan="2">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дата и время"       Binding="{Binding data_game}"    IsReadOnly="True"  Width="110"/>
-                <DataGridTextColumn Header="Лига"       Binding="{Binding liga_name}"    IsReadOnly="True"  Width="236"/>
+                <DataGridTextColumn Header="Лига"       Binding="{Binding liga_name}"    IsReadOnly="True"  Width="160"/>
                 <DataGridTextColumn Header="Хозяева"    Binding="{Binding home_command}" IsReadOnly="True"  Width="160"/>
                 <DataGridTextColumn Header="Гости"    Binding="{Binding away_command}" IsReadOnly="True"  Width="160"/>
                 <DataGridTextColumn Header="Событие"          Binding="{Binding event_}"       IsReadOnly="True"  Width="160"/>
@@ -235,6 +235,13 @@
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
                 <DataGridTextColumn Header="on_off" Binding="{Binding on_off}" IsReadOnly="True" Visibility="Hidden" Width="47"/>
+                <DataGridTextColumn Header="Контроль" Binding="{Binding period_control}" IsReadOnly="True"  Width="76">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
 
             </DataGrid.Columns >
             <DataGrid.RowStyle>

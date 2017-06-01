@@ -1,0 +1,38 @@
+﻿<Window x:Class="AsianApi.ControlBet"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Настройка периода контроля границы коэффициента" Height="168" Width="380" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow">
+    <Window.Background>
+        <LinearGradientBrush>
+            <GradientStop Color="LightGray" Offset="1"></GradientStop>
+            <GradientStop Color="White" Offset="0"></GradientStop>
+        </LinearGradientBrush>
+    </Window.Background>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Bottom" Height="32" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="3" Padding="30,2,30,2" Click="OnOkButtonClick">OK</Button>
+            <Button Margin="3" Padding="10,2,10,2" Click="OnCancelButtonClick">Отмена</Button>
+        </StackPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Height="23" HorizontalAlignment="Left" Text="Начало периода контроля(мин):" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Margin="5"/>
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical">
+                <Slider  Height="23" Name="begin_control" Width="180" Maximum="45" Minimum="1" TickPlacement="BottomRight" SmallChange="1" LargeChange="2" IsSnapToTickEnabled="True" />
+                <TextBlock Text="{Binding ElementName=begin_control, Path=Value}" TextAlignment="Center" Padding="5"></TextBlock>
+            </StackPanel>
+            <TextBlock Height="23" HorizontalAlignment="Left" Text="Конец периода контроля(мин):" VerticalAlignment="Top" Grid.Row="1" Grid.Column="0" Margin="5"/>
+            <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Vertical">
+                <Slider  Height="23" Name="end_control" Width="180" Maximum="45" Minimum="{Binding ElementName=begin_control, Path=Value}" TickPlacement="BottomRight" SmallChange="1" LargeChange="2" IsSnapToTickEnabled="True" />
+                <TextBlock Text="{Binding ElementName=end_control, Path=Value}" TextAlignment="Center" Padding="5"></TextBlock>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
+

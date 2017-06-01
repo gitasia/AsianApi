@@ -52,7 +52,7 @@ namespace AsianApi
             public user_bet_table(Int32 user_id, string liga_id, string match_id, string game_id, string home_command, string away_command, 
                                   string event_, string liga_name, string my_odds, string bet, Boolean betted, string kef, string data_bet,
                                   string result_first, string result_full, Boolean on_off, string mani, string data_game, string diff, 
-                                  string sport, string live, Boolean checked_)
+                                  string sport, string live, Boolean checked_, string period_control)
             {
                 this.user_id = user_id;
                 this.liga_id = liga_id;
@@ -76,7 +76,9 @@ namespace AsianApi
                 this.sport = sport;
                 this.live = live;
                 this.checked_ = checked_;
-                
+                this.period_control = period_control;
+
+
             }
             public Int32 user_id { get; set; }
             public String liga_id { get; set; }
@@ -100,6 +102,7 @@ namespace AsianApi
             public String sport { get; set; } // football, basketball, ..
             public String live { get; set; } // in running, today, early, ..
             public Boolean checked_ { get; set; }
+            public String period_control { get; set; }
         }
 
         public String connect_base(String err)
@@ -139,7 +142,7 @@ namespace AsianApi
                    Base.Add(new user_bet_table(Convert.ToInt32(r["user_id"].ToString()), r["liga_id"].ToString(), r["match_id"].ToString(), r["game_id"].ToString(), r["home_command"].ToString(), r["away_command"].ToString(), 
                                                r["event"].ToString(), r["liga_name"].ToString(), r["my_odds"].ToString(), r["bet"].ToString(), Convert.ToBoolean(r["betted"]), r["kef"].ToString(),
                                                r["data_bet"].ToString(), r["result_first"].ToString(), r["result_full"].ToString(), Convert.ToBoolean(r["on_off"]), r["mani"].ToString(), 
-                                               r["data_game"].ToString(), r["diff"].ToString(), r["sport"].ToString(), r["live"].ToString(), Convert.ToBoolean(r["checked_"])));
+                                               r["data_game"].ToString(), r["diff"].ToString(), r["sport"].ToString(), r["live"].ToString(), Convert.ToBoolean(r["checked_"]), r["period_control"].ToString()));
                     //Convert.ToDateTime(
                 }
                 r.Close();
@@ -204,6 +207,7 @@ namespace AsianApi
                 {
                     for (int ll = 0; ll <= Base.Count - 1; ll++)
                     {
+                        Base[ll].on_off = false;
                         cmd.CommandText = "insert LOW_PRIORITY `user_bet` set ";
 
                         cmd.CommandText += " `live`=\"" +         Base[ll].live + "\",";
@@ -230,6 +234,7 @@ namespace AsianApi
 
                         cmd.CommandText += " `diff`='" +          Base[ll].diff + "',";
                         cmd.CommandText += " `sport`='" +         Base[ll].sport + "',";
+                        cmd.CommandText += " `period_control`='" + Base[ll].period_control + "',";
                         cmd.CommandText += " `checked_`=" +       Base[ll].checked_ + ",";
 
                         //             if (Base[ll].data_bet != null) cmd.CommandText += " `data_bet`=" + Base[ll].data_bet + ",";

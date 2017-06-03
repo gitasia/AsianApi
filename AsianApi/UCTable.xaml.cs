@@ -17,6 +17,7 @@ using AsianApi.Model.Worker;
 using System.Globalization;
 
 
+
 namespace AsianApi
 {
     /// <summary>
@@ -40,6 +41,7 @@ namespace AsianApi
         public delegate void EventHandler(object sender, object e); //tick timer
 
         private MyTable path_cell;
+        
         private string data; // readln file
         public static Int32 user_id;
         public static Int32 credit;
@@ -207,6 +209,12 @@ namespace AsianApi
                 MyStr path1 = Ligas[0]; Ligas.RemoveAt(0); Ligas.Insert(0, path1);
             }
             set1();
+        }
+
+        private void bets_del(object sender, MouseButtonEventArgs e) //del bet, wish still  no bet
+        {
+            int index_row = bets.SelectedIndex;
+            if (index_row != -1 && !Base[index_row].betted && MessageBox.Show("Удалить предполагаемое событие?", "Удаление события", MessageBoxButton.YesNo) == MessageBoxResult.Yes) Base.RemoveAt(index_row);
         }
 
         private void Edit_begin(object sender, DataGridBeginningEditEventArgs e) //Начали ввод границы коэффициента
@@ -547,7 +555,7 @@ namespace AsianApi
                         Base.Add(new BaseUp.user_bet_table(user_id, path_cell.LeagueId, path_cell.MathcId, path_cell.GameId,
                                                            home_command, away_command, event_ + path_cell.EVENT, liganame, 
                                                            edit_cell, "0", false, kef, "", "", "", false, "", path_cell.DataGame,
-                                                           diff, "football", "in running", false, begin_control + "-" + end_control));
+                                                           diff, "football", "in running", false, "-"));
                     }
                 }
             }
